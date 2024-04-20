@@ -3,6 +3,7 @@ import numpy as np
 
 from coolingUnitary import CoolingUnitary
 from occupationProbabilitiesList import OccupationProbabilitiesList
+from pairingPartnerAlgorithm import PairingPartnerAlgorithm
 from utils import *
 
 #TEST
@@ -29,3 +30,6 @@ obj = CoolingUnitary(3,lista)
 print(obj)
 print(type(obj))
 checkUnitary(obj)
+
+
+a = PairingPartnerAlgorithm(5,0.1)
