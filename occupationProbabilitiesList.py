@@ -21,12 +21,6 @@ class OccupationProbabilitiesList:
     _excitedStateProbability = 0.1
     _List = []
 
-
-    """ def __init__(self, numQubits=_numQubits,excitedStateProbability=_excitedStateProbability):
-        self._numQubits = numQubits
-        self._excitedStateProbability = excitedStateProbability
-        self._List = self._createList(self,self._numQubits,self._excitedStateProbability) """
-
     def __new__(cls,numQubits=_numQubits,excitedStateProbability=_excitedStateProbability):
         cls._numQubits = numQubits
         cls._excitedStateProbability = excitedStateProbability
@@ -35,6 +29,9 @@ class OccupationProbabilitiesList:
     
 
     def _createList(self,numQubits,excitedStateProbability):
+        """
+        Private: Creation of the occupation list
+        """
         numberOfStates = 2 ** numQubits
         _List = []
         for i in range(numberOfStates):
@@ -55,5 +52,3 @@ class OccupationProbabilitiesList:
             #Put the element in the list
             _List.append([integerToBinary(i,numQubits),string,probability])
         return _List
-
-print(type(OccupationProbabilitiesList(3,0.1)))

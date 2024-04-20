@@ -2,6 +2,7 @@ from collections import Counter
 import numpy as np
 
 from coolingUnitary import CoolingUnitary
+from occupationProbabilitiesList import OccupationProbabilitiesList
 from utils import *
 
 #TEST
