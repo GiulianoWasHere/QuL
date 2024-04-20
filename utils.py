@@ -2,6 +2,22 @@ from collections import Counter
 import numpy as np
 import math 
 
+##Not the right place to put this 
+
+def printOccupationProbabilitiesList(list):
+    for i in range(len(list)):
+        print(str(i), end=" | ")
+        print(list[i])
+
+
+
+def countZeros(string):
+    count = 0
+    for i in range(len(string)):
+        if(string[i]=="0"):
+            count+=1
+    return count
+
 def integerToBinary(integer,numOfBits):
     if isinstance(integer, int):
         binaryNumber = format(integer, '0'+ str(numOfBits) +'b')
