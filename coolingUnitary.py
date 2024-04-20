@@ -14,26 +14,13 @@ class CoolingUnitary:
             EXAMPLE Single Swap with integer: [[0,1]] 000 (0) <---> 001 (1)
             EXAMPLE Cycle of length 3: [["000","001","010"]] 000 --> 001 --> 010 --> 000
             EXAMPLE 2 Cycles of length 2: [["000","001"], ["010","011"]] 000 <---> 001 , 010 <---> 011
+    Return:
+        coolingUnitary (numpy.ndarray)
     """
     
     _swapList = [["000","001"]]
     _numQubits = 3
     coolingUnitary = None
-
-    #def __init__(self, numQubits=_numQubits,swapList=_swapList):
-    #    """
-    #    numQubits: Number of qubits.
-    #    swapList: List to describe the states to be swapped.
-    #    EXAMPLE Single Swap: [["000","001"]] 000 <---> 001
-    #    EXAMPLE Single Swap with integer: [[0,1]] 000 (0) <---> 001 (1)
-    #    EXAMPLE Cycle of length 3: [["000","001","010"]] 000 --> 001 --> 010 --> 000
-    #    EXAMPLE 2 Cycles of length 2: [["000","001"], ["010","011"]] 000 <---> 001 , 010 <---> 011
-    #    """
-    #    self._checkInputParameters(numQubits,swapList)
-    #    self._numQubits = numQubits
-    #    self._swapList = swapList
-    #    self._swapList = listIntegerToBinary(self._swapList,numQubits)
-    #    self._makeMatrix()
 
     def __new__(cls,numQubits=_numQubits,swapList=_swapList):
         """
@@ -122,12 +109,3 @@ class CoolingUnitary:
             self.coolingUnitary[element,element] = 0
             self.coolingUnitary[firstElement,element] = 1
             #print(i)     
-              
-    def show(self):
-        """
-        Print the Unitary.
-        """
-        print(self.coolingUnitary)
-
-    def getMatrix(self):
-        return self.coolingUnitary

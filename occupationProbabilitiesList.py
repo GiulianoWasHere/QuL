@@ -13,6 +13,8 @@ class OccupationProbabilitiesList:
     Parameters:
         numQubits (int): Number of qubits.
         excitedStateProbability (float): Probability of the excited state
+    Return:
+        occupationProbabilitiesList (List)
     """
     
     _numQubits = 2
@@ -53,3 +55,5 @@ class OccupationProbabilitiesList:
             #Put the element in the list
             _List.append([integerToBinary(i,numQubits),string,probability])
         return _List
+
+print(type(OccupationProbabilitiesList(3,0.1)))

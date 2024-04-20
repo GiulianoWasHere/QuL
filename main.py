@@ -26,4 +26,5 @@ lista = [[1,0,"010"],["100",7]]
 obj = CoolingUnitary(3,lista)
 
 print(obj)
+print(type(obj))
 checkUnitary(obj)
