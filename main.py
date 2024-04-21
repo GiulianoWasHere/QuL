@@ -3,6 +3,7 @@ import numpy as np
 
 from coolingUnitary import CoolingUnitary
 from occupationProbabilitiesList import OccupationProbabilitiesList
+from mirrorProtocol import MirrorProtocol
 from pairingPartnerAlgorithm import PairingPartnerAlgorithm
 from utils import *
 
@@ -32,4 +33,7 @@ print(type(obj))
 checkUnitary(obj)
 
 
-a = PairingPartnerAlgorithm(5,0.1)
+#a = PairingPartnerAlgorithm(5,0.1)
+#a = MirrorProtocol(5,0.1)
+
+#print(a)

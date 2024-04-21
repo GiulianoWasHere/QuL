@@ -9,8 +9,27 @@ def printOccupationProbabilitiesList(list):
         print(str(i), end=" | ")
         print(list[i])
 
+def printOccupationProbabilitiesList2(list,t,j):
+    for i in range(len(list)):
+        print(str(i), end=" | ")
+        print(list[i],end="")
+        if(t == i):
+            print("*",end="")
+        if(i == j):
+            print("*",end="")
+        print()
 
+###
 
+def invertState(s):
+    string = list(s)
+    for i in range(len(string)):
+        if(string[i] == '0'):
+            string[i] = '1'
+        else:
+            string[i] = '0'
+    s = "".join(string)
+    return s
 def countZeros(string):
     count = 0
     for i in range(len(string)):
