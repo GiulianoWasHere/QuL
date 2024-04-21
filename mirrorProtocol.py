@@ -24,10 +24,10 @@ class MirrorProtocol:
         k = self._numQubits/2
         numberOfStates = 2 ** self._numQubits
         swapList = []
-    	#Index of the state
+    	#Index in the list of the state like 000, 001... 
         index = 0
         for i in range(0,int(numberOfStates/2)):
-            if(k > countZeros(li[i][0])):
-                swapList.append([li[i][0],invertState(li[i][0])])
-                print(li[i][0])
+            if(k > countZeros(li[i][index])):
+                swapList.append([li[i][index],invertState(li[i][index])])
+                #print(li[i][0])
         return swapList
