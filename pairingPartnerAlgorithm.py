@@ -20,6 +20,7 @@ class PairingPartnerAlgorithm:
         #_swapList = cls._selectionSortWithMaxIndex(cls,cls._probabilitiesList)
         #_swapList2 = cls._scoreAlgorithm(cls,cls._probabilitiesList)
         _swapList2 = cls._test(cls,cls._probabilitiesList)
+        cls._subSetsOfSwaps(cls,_swapList2)
         #for i in range(len(_swapList)):
         #    if(_swapList[i][0] == _swapList2[i][0]):
         #        print(str(i) + "| OK")
@@ -31,6 +32,22 @@ class PairingPartnerAlgorithm:
        
         return 1
     
+    def _subSetsOfSwaps(self,l):
+        subsets = [[[]]]
+        dictionary  = {}
+        for i in range(len(l)):
+            if l[i][0] not in dictionary:
+                dictionary[l[i][0]] = l[i][1] + " (" + str(i) + ")"
+            else:
+                dictionary[l[i][0]] += ", " + l[i][1] + " (" + str(i) + ")"
+            if l[i][1] not in dictionary:
+                dictionary[l[i][1]] = l[i][0] + " (" + str(i) + ")"
+            else:
+                dictionary[l[i][1]] += ", " + l[i][0] + " (" + str(i) + ")"
+        print()
+        for key, value in dictionary.items():
+            print(key, ":", value)
+        return 1
     #Same cost as the other one
     def _scoreAlgorithm(self,li):
         #index of the list to compare, in this case in the list we have ["00",x^2, 0.8..]
@@ -121,7 +138,7 @@ class PairingPartnerAlgorithm:
                 l[i] = l[element]
                 l[element] = temp
         print(swapListWithStates)
-        printOccupationProbabilitiesList(l)
-        return l
+        #printOccupationProbabilitiesList(l)
+        return swapListWithStates
 
 a = PairingPartnerAlgorithm(5,0.1)

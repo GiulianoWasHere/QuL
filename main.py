@@ -33,7 +33,7 @@ print(type(obj))
 checkUnitary(obj)
 
 
-#a = PairingPartnerAlgorithm(5,0.1)
+a = PairingPartnerAlgorithm(5,0.1)
 #a = MirrorProtocol(5,0.1)
 
 #print(a)
