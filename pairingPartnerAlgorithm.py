@@ -20,34 +20,55 @@ class PairingPartnerAlgorithm:
         #_swapList = cls._selectionSortWithMaxIndex(cls,cls._probabilitiesList)
         #_swapList2 = cls._scoreAlgorithm(cls,cls._probabilitiesList)
         _swapList2 = cls._test(cls,cls._probabilitiesList)
-        cls._subSetsOfSwaps(cls,_swapList2)
+        _ListSubSetOfSwaps  = cls._subSetsOfSwaps(cls,_swapList2)
+        _matrix = CoolingUnitary(cls._numQubits,_ListSubSetOfSwaps[0])
+        #for i in range(1,len(_ListSubSetOfSwaps)):
+        #    print(_ListSubSetOfSwaps[i])
+        for i in range(1,len(_ListSubSetOfSwaps)):
+            _matrix = CoolingUnitary(cls._numQubits,_ListSubSetOfSwaps[i]).dot(_matrix)
+        checkUnitary2(_matrix,cls._excitedStateProbability)
         #for i in range(len(_swapList)):
         #    if(_swapList[i][0] == _swapList2[i][0]):
         #        print(str(i) + "| OK")
         #    else:
         #        print(str(i) + "| NOT OK")
 
-
+        
         #Return the unitary, unitaries ? 
        
-        return 1
+        return _matrix
     
     def _subSetsOfSwaps(self,l):
-        subsets = [[[]]]
+        subsets = [[]]
         dictionary  = {}
+        numOfSubsets = 0
+        #subsets.append([])
         for i in range(len(l)):
+            reset = 0
             if l[i][0] not in dictionary:
-                dictionary[l[i][0]] = l[i][1] + " (" + str(i) + ")"
+            #    dictionary[l[i][0]] = l[i][1] + " (" + str(i) + ")"
+                dictionary[l[i][0]] = 0
             else:
-                dictionary[l[i][0]] += ", " + l[i][1] + " (" + str(i) + ")"
+                reset = 1
             if l[i][1] not in dictionary:
-                dictionary[l[i][1]] = l[i][0] + " (" + str(i) + ")"
+            #    dictionary[l[i][1]] = l[i][0] + " (" + str(i) + ")"
+                dictionary[l[i][1]] =  0
             else:
-                dictionary[l[i][1]] += ", " + l[i][0] + " (" + str(i) + ")"
+                reset = 1
+            if(reset == 1):
+                dictionary = {}
+                #dictionary[l[i][0]] = l[i][1] + " (" + str(i) + ")"
+                #dictionary[l[i][1]] = l[i][0] + " (" + str(i) + ")"
+                dictionary[l[i][0]] = 0
+                dictionary[l[i][1]] = 0
+                numOfSubsets += 1
+                subsets.append([])
+            subsets[numOfSubsets].append(l[i])
         print()
-        for key, value in dictionary.items():
-            print(key, ":", value)
-        return 1
+        #print(subsets)
+        #for key, value in dictionary.items():
+        #    print(key, ":", value)
+        return subsets
     #Same cost as the other one
     def _scoreAlgorithm(self,li):
         #index of the list to compare, in this case in the list we have ["00",x^2, 0.8..]
@@ -137,8 +158,8 @@ class PairingPartnerAlgorithm:
                 temp = l[i]
                 l[i] = l[element]
                 l[element] = temp
-        print(swapListWithStates)
-        #printOccupationProbabilitiesList(l)
+        #print(swapListWithStates)
+        printOccupationProbabilitiesList(l)
         return swapListWithStates
 
-a = PairingPartnerAlgorithm(5,0.1)
+a = PairingPartnerAlgorithm(5,0.05)

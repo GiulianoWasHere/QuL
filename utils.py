@@ -89,9 +89,48 @@ def checkUnitary(m):
             raise ValueError("Error")
             
         outputState = int(indices[0][0])
-        print(integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits))
+        print(str(i) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits))
         #print(state)
         #print(matrix)
 
         # Return to all zero matrix
         state[i,0] = 0 
+
+def checkUnitary2(m,excitedStateProbability):
+    """
+    Check every state after the application of the unitary
+    """
+
+    # Check if the matrix is unitary
+    if(is_unitary(m) == False):
+        raise ValueError("Not an unitary Matrix")
+    
+
+    numberOfStates = len(m)
+    numQubits = int(math.log2(numberOfStates))
+    # 1 column with 2 ** NumQubits 
+    state = np.zeros((numberOfStates,1))
+    for i in range(numberOfStates):
+        # i = 0,  State 00 = [1 0 0 0] 
+        # i = 1,  State 01 = [0 1 0 0] 
+
+        #Application of the unitary
+        state[i,0] = 1 
+        matrix = m.dot(state) 
+        indices = np.where(matrix == 1)
+
+        #Probably not necessary
+        if len(indices[0]) > 1:
+            raise ValueError("Error")
+        
+        
+        outputState = int(indices[0][0])
+        numberOfZeros = countZeros(integerToBinary(outputState,numQubits))
+        probability = (excitedStateProbability ** (numQubits - numberOfZeros)) * ((1 - excitedStateProbability)** numberOfZeros)
+        print(str(i) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits) + " | " + str(probability))
+        #print(state)
+        #print(matrix)
+
+        # Return to all zero matrix
+        state[i,0] = 0 
+        
