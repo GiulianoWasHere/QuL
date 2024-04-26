@@ -8,6 +8,8 @@ def printOccupationProbabilitiesList(list):
     for i in range(len(list)):
         print(str(i), end=" | ")
         print(list[i])
+        if(i == len(list)//2 - 1 ):
+            print("-----------------")
 
 def printOccupationProbabilitiesList2(list,t,j):
     for i in range(len(list)):
@@ -128,6 +130,8 @@ def checkUnitary2(m,excitedStateProbability):
         numberOfZeros = countZeros(integerToBinary(outputState,numQubits))
         probability = (excitedStateProbability ** (numQubits - numberOfZeros)) * ((1 - excitedStateProbability)** numberOfZeros)
         print(str(i) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits) + " | " + str(probability))
+        if(i == (numberOfStates //2)-1):
+            print("-------------------------")
         #print(state)
         #print(matrix)
 
