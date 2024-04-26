@@ -6,7 +6,16 @@ from occupationProbabilitiesList import OccupationProbabilitiesList
 from utils import *
 
 class MirrorProtocol:
+    """
+    ## MirrorProtocol(numQubits,excitedStateProbability)
+    class for the Mirror Protocol.
 
+    Parameters:
+        numQubits (int): Number of qubits.
+        excitedStateProbability (float): Probability of the excited state
+    Return:
+        Cooling Unitary (numpy.ndarray)
+    """
     _numQubits = 2
     _excitedStateProbability = 0.1
     _probabilitiesList = []
@@ -20,7 +29,7 @@ class MirrorProtocol:
         return CoolingUnitary(cls._numQubits,_swapList)
     
     def _algortithm(self,li):
-        printOccupationProbabilitiesList(li)
+        #printOccupationProbabilitiesList(li)
         k = self._numQubits/2
         numberOfStates = 2 ** self._numQubits
         swapList = []

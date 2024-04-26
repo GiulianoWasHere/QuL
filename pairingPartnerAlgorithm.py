@@ -6,7 +6,16 @@ from occupationProbabilitiesList import OccupationProbabilitiesList
 from utils import *
 
 class PairingPartnerAlgorithm:
+    """
+    ## PairingPartnerAlgorithm(numQubits,excitedStateProbability)
+    Class for the Pairing Partner Algorithm.
 
+    Parameters:
+        numQubits (int): Number of qubits.
+        excitedStateProbability (float): Probability of the excited state.
+    Return:
+        Cooling Unitary (numpy.ndarray)
+    """
     _numQubits = 2
     _excitedStateProbability = 0.1
     _probabilitiesList = []
@@ -16,29 +25,26 @@ class PairingPartnerAlgorithm:
         cls._numQubits = numQubits
         cls._excitedStateProbability = excitedStateProbability
         cls._probabilitiesList = OccupationProbabilitiesList(cls._numQubits,cls._excitedStateProbability)
-        #cls._algorithm(cls,cls._probabilitiesList)
-        #_swapList = cls._selectionSortWithMaxIndex(cls,cls._probabilitiesList)
-        #_swapList2 = cls._scoreAlgorithm(cls,cls._probabilitiesList)
-        _swapList2 = cls._test(cls,cls._probabilitiesList)
+
+        #After the algorithm a list of swaps is returned
+        _swapList2 = cls._minSwapsAlgorithm(cls,cls._probabilitiesList)
+
+        #The list of swaps is split in N subsets
         _ListSubSetOfSwaps  = cls._subSetsOfSwaps(cls,_swapList2)
+
+        #A matrix for every subset is created and multiplied into one
         _matrix = CoolingUnitary(cls._numQubits,_ListSubSetOfSwaps[0])
-        #for i in range(1,len(_ListSubSetOfSwaps)):
-        #    print(_ListSubSetOfSwaps[i])
         for i in range(1,len(_ListSubSetOfSwaps)):
             _matrix = CoolingUnitary(cls._numQubits,_ListSubSetOfSwaps[i]).dot(_matrix)
-        checkUnitary2(_matrix,cls._excitedStateProbability)
-        #for i in range(len(_swapList)):
-        #    if(_swapList[i][0] == _swapList2[i][0]):
-        #        print(str(i) + "| OK")
-        #    else:
-        #        print(str(i) + "| NOT OK")
 
-        
-        #Return the unitary, unitaries ? 
-       
+        #checkUnitary2(_matrix,cls._excitedStateProbability)
+
         return _matrix
     
     def _subSetsOfSwaps(self,l):
+        """
+        Private: Creation of subsets of swaps by a list of swaps.
+        """
         subsets = [[]]
         dictionary  = {}
         numOfSubsets = 0
@@ -64,7 +70,7 @@ class PairingPartnerAlgorithm:
                 numOfSubsets += 1
                 subsets.append([])
             subsets[numOfSubsets].append(l[i])
-        print()
+        #print()
         #print(subsets)
         #for key, value in dictionary.items():
         #    print(key, ":", value)
@@ -136,8 +142,11 @@ class PairingPartnerAlgorithm:
         print()
         return l
 
-    #Same cost it is possible to optmize it to run faster
-    def _test(self,li):
+    #Same cost it is possible to optmize it to run faster. 
+    def _minSwapsAlgorithm(self,li):
+        """
+        Private: Minimum swap algorithm.
+        """
         #index of the list to compare, in this case in the list we have ["00",x^2, 0.8..]
         #so the third element is the one we want to compare
         swapListWithStates = []
@@ -159,7 +168,7 @@ class PairingPartnerAlgorithm:
                 l[i] = l[element]
                 l[element] = temp
         #print(swapListWithStates)
-        printOccupationProbabilitiesList(l)
+        #printOccupationProbabilitiesList(l)
         return swapListWithStates
 
 a = PairingPartnerAlgorithm(5,0.05)
