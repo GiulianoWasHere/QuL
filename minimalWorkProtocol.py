@@ -27,24 +27,23 @@ class MinimalWorkProtocol:
         cls._probabilitiesList = OccupationProbabilitiesList(cls._numQubits,cls._excitedStateProbability)
         _swapList = cls._algorithm2(cls,cls._probabilitiesList)
         #printOccupationProbabilitiesList(cls._probabilitiesList)
-        #checkUnitary2(CoolingUnitary(cls._numQubits,_swapList),cls._excitedStateProbability)
-        return 1
+
+        #The list of swaps is split in N subsets
+        _ListSubSetOfSwaps  = cls._subSetsOfSwaps(cls,_swapList)
+
+        #A matrix for every subset is created and multiplied into one
+        _matrix = CoolingUnitary(cls._numQubits,_ListSubSetOfSwaps[0])
+        for i in range(1,len(_ListSubSetOfSwaps)):
+            _matrix = CoolingUnitary(cls._numQubits,_ListSubSetOfSwaps[i]).dot(_matrix)
+
+        checkUnitary2(_matrix,cls._excitedStateProbability)
+        return _matrix
         #return CoolingUnitary(cls._numQubits,_swapList)
     
-    def _elementsToBeSwapped(self,list,count,halfOfStates):
-        swapList = []
-        for i in range(len(list)):
-            if(count[0] > halfOfStates):
-                return swapList
-            if(list[i] >= halfOfStates):
-                swapList.append(list[i])
-                stop = True
-            count[0] += 1
-            
-        return swapList
-    
-
     def _listOfIndexes(self,li,index,numberOfStates):
+        """
+        Private: Creation of a dictionary with {Probability : [index]}
+        """
         dictionary = {}
         for i in range(numberOfStates):
             if li[i][index] not in dictionary:
@@ -54,6 +53,9 @@ class MinimalWorkProtocol:
         return dictionary
     
     def _listOfIndexes2(self,li,index,numberOfStates):
+        """
+        Private: Creation of a dictionary with {Probability : [State, index]}
+        """
         dictionary = {}
         for i in range(numberOfStates):
             if li[i][index] not in dictionary:
@@ -63,12 +65,18 @@ class MinimalWorkProtocol:
         return dictionary
     
     def _pop(self,li):
+        """
+        Private: Pop an element from the list.
+        """
         element = li[len(li)-1]
         del li[len(li)-1]
         return element
     
     #very long name
     def _checkIfMaxProbabilityIsOnTopHalfList(self,dictionary,halfOfStates):
+        """
+        Private: Returns true if the highest probabilites are on the top half of the list.
+        """
         count = 1
         for element, indexes in dictionary.items():
             for i in range(len(indexes)):
@@ -79,9 +87,46 @@ class MinimalWorkProtocol:
                     print(indexes[i][1])
                     return False
                 count +=1
-    def _algorithm2(self,li):
-        a = 0
 
+    def _subSetsOfSwaps(self,l):
+        """
+        Private: Creation of subsets of swaps by a list of swaps.
+        """
+        subsets = [[]]
+        dictionary  = {}
+        numOfSubsets = 0
+        #subsets.append([])
+        for i in range(len(l)):
+            reset = 0
+            if l[i][0] not in dictionary:
+            #    dictionary[l[i][0]] = l[i][1] + " (" + str(i) + ")"
+                dictionary[l[i][0]] = 0
+            else:
+                reset = 1
+            if l[i][1] not in dictionary:
+            #    dictionary[l[i][1]] = l[i][0] + " (" + str(i) + ")"
+                dictionary[l[i][1]] =  0
+            else:
+                reset = 1
+            if(reset == 1):
+                dictionary = {}
+                #dictionary[l[i][0]] = l[i][1] + " (" + str(i) + ")"
+                #dictionary[l[i][1]] = l[i][0] + " (" + str(i) + ")"
+                dictionary[l[i][0]] = 0
+                dictionary[l[i][1]] = 0
+                numOfSubsets += 1
+                subsets.append([])
+            subsets[numOfSubsets].append(l[i])
+        #print()
+        #print(subsets)
+        #for key, value in dictionary.items():
+        #    print(key, ":", value)
+        return subsets
+    
+    def _algorithm2(self,li):
+        """
+        Private: Algorithm for the Minimal Work Protocol.
+        """
         numberOfStates = 2 ** self._numQubits
     	#Index of the probabilities 
         index = 2
@@ -93,20 +138,24 @@ class MinimalWorkProtocol:
             dictionary = self._listOfIndexes2(self,li,index,numberOfStates)
             if(self._checkIfMaxProbabilityIsOnTopHalfList(self,dictionary,halfOfStates)):
                 break
+
+            #Transform the dictionary to a list
             vectDictionary = []
             for element, indexes in dictionary.items():
                 vectDictionary.append(indexes)
             statesToBeSwapped = []
-            for i in range(len(vectDictionary)-1,0,-1):
-                #print(i)
-                
+
+            #Find the states to be swapped, we start from the bottom of the list
+            #and we search for the states on top of the list with the lowest probability
+            for i in range(len(vectDictionary)-1,0,-1):  
                 for j in range(len(vectDictionary[i])-1,-1,-1):
-                    #print(vectDictionary[i][j][1])
                     if(vectDictionary[i][j][1] < halfOfStates):
                         statesToBeSwapped.append(vectDictionary[i][j])
 
-                print(statesToBeSwapped)
+                #print(statesToBeSwapped)
 
+                #The found states are swapped with the next list of probabilities (ES. states with prob 0.0081 with 0.0729)
+                #only if the states to be swapped are in the lower half of the list.
                 for j in range(len(vectDictionary[i-1])-1,-1,-1):
                     if(len(statesToBeSwapped) > 0):
                         if(vectDictionary[i-1][j][1] >= halfOfStates):
@@ -120,136 +169,15 @@ class MinimalWorkProtocol:
                             li[vectDictionary[i-1][j][1]] = temp
                     else:
                         break
-                #statesToBeSwapped = []
-            
 
-            
-       
-        print(swapList)
-        printOccupationProbabilitiesList(li)
+        #print(swapList)
+        #printOccupationProbabilitiesList(li)
         #print(li)
         #print(dictionary)
-        dictionary = self._listOfIndexes2(self,li,index,numberOfStates)
+        #dictionary = self._listOfIndexes2(self,li,index,numberOfStates)
         #print(dictionary)
         #print(self._checkIfMaxProbabilityIsOnTopHalfList(self,dictionary,halfOfStates))
         return swapList
-
-    def _algorithm(self,li):
-        #printOccupationProbabilitiesList(li)
-        numberOfStates = 2 ** self._numQubits
-    	#Index of the probabilities 
-        index = 2
-        halfOfStates = numberOfStates // 2
-        dictionaryUpperHalf = {}
-        dictionaryLowerHalf = {}
-        
-        """ for i in range(numberOfStates):
-            if li[i][index] not in dictionary:
-                dictionary[li[i][index]] = [i]
-            else:
-                dictionary[li[i][index]].append(i) 
-
-        count2 = [0]
-        print(dictionary)
-        vectDictionary = []
-        for element, indexes in dictionary.items():
-            vectDictionary.append(indexes)
-        print(vectDictionary)
-        """
-
-        #Creation of an index list for each probability 
-        for i in range(numberOfStates):
-            if i < halfOfStates:
-                if li[i][index] not in dictionaryUpperHalf:
-                    dictionaryUpperHalf[li[i][index]] = [i]
-                else:
-                    dictionaryUpperHalf[li[i][index]].append(i) 
-            else:
-                if li[i][index] not in dictionaryLowerHalf:
-                    dictionaryLowerHalf[li[i][index]] = [i]
-                else:
-                    dictionaryLowerHalf[li[i][index]].append(i)    
-
-
-        #Dictionaries to two vectors
-        print(dictionaryUpperHalf)
-        print(dictionaryLowerHalf)
-        vectUpperHalf = []
-        vectLowerHalf = []
-        vectLowerHalf.append([])
-        for element, indexes in dictionaryUpperHalf.items():
-            vectUpperHalf.append(indexes)
-        for element, indexes in dictionaryLowerHalf.items():
-            vectLowerHalf.append(indexes)
-        vectUpperHalf.append([])
-        
-        print(vectUpperHalf)
-        print(vectLowerHalf)
-
-
-        lista = [0,1,2,3,4]
-        lista = lista[2:]
-        print(lista)
-        numOfElements = len(vectUpperHalf[0])
-        for i in range(1,len(vectUpperHalf)-2):
-            
-            if(len(vectUpperHalf[i]) > 0):
-                swaps = []
-                a = 0
-                for j in range(len(vectLowerHalf[i-1])):
-                    vectUpperHalf[i-1].append(vectLowerHalf[i-1][j])
-                    #vectLowerHalf[i].append(vectUpperHalf[i][j])
-                    
-                    if(len(vectUpperHalf[i]) > j):
-                        vectLowerHalf[i].append(vectUpperHalf[i-1][j])
-                        swaps.append([vectLowerHalf[i-1][j],vectUpperHalf[i][j]])
-                    else:
-                        #print(i)
-                        #print(vectUpperHalf)
-                        #print(vectLowerHalf)
-                        vectLowerHalf[i].append(vectUpperHalf[i+1][j-len(vectUpperHalf[i])])
-                        swaps.append([vectLowerHalf[i-1][j],vectUpperHalf[i+1][j-len(vectUpperHalf[i])]])
-                    
-                    a = j
-                    #del vectLowerHalf[i-1][j]
-                    #print(j,len(vectLowerHalf[i-1])
-                print(a+1)
-                a = a + 1
-                vectUpperHalf[i+1] =  vectUpperHalf[i+1][a:]
-                vectLowerHalf[i] =  vectLowerHalf[i][a:]
-            print(vectUpperHalf)
-            print(vectLowerHalf)
-        """ for element, indexes in dictionaryUpperHalf.items():
-            if lastElement in dictionaryLowerHalf:
-                print(dictionaryLowerHalf[lastElement])
-
-            lastElement = element """
-        
-
-        swapList = []
-        swapList2 = []
-        
-        """  count = 0
-        for i in range(len(vectDictionary)):
-            b = 0
-            for j in range(len(vectDictionary[i])):
-                if(vectDictionary[i][j] >= halfOfStates):
-                    swapList.append([vectDictionary[i][j]])
-                    b +=1
-
-        print(swapList) 
-        for element, indexes in dictionary.items():
-            swapList.append(self._elementsToBeSwapped(self,indexes,count2,halfOfStates))
-        count = 0
-        for element, indexes in dictionary.items():
-            if(count != 0):
-                    for i in range(len(swapList[count-1])):
-                        swapList2.append([swapList[count-1][i],indexes[i]])
-            count +=1
-        print(swapList)
-        print(swapList2) """
-        return 1
-
     
 
-a = MinimalWorkProtocol(7,0.1)
+a = MinimalWorkProtocol(5,0.1)

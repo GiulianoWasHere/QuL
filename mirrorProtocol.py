@@ -8,11 +8,11 @@ from utils import *
 class MirrorProtocol:
     """
     ## MirrorProtocol(numQubits,excitedStateProbability)
-    class for the Mirror Protocol.
+    Class for the Mirror Protocol.
 
     Parameters:
         numQubits (int): Number of qubits.
-        excitedStateProbability (float): Probability of the excited state
+        excitedStateProbability (float): Probability of the excited state.
     Return:
         Cooling Unitary (numpy.ndarray)
     """
@@ -25,10 +25,10 @@ class MirrorProtocol:
         cls._numQubits = numQubits
         cls._excitedStateProbability = excitedStateProbability
         cls._probabilitiesList = OccupationProbabilitiesList(cls._numQubits,cls._excitedStateProbability)
-        _swapList = cls._algortithm(cls,cls._probabilitiesList)
+        _swapList = cls._algorithm(cls,cls._probabilitiesList)
         return CoolingUnitary(cls._numQubits,_swapList)
     
-    def _algortithm(self,li):
+    def _algorithm(self,li):
         #printOccupationProbabilitiesList(li)
         k = self._numQubits/2
         numberOfStates = 2 ** self._numQubits
@@ -40,3 +40,5 @@ class MirrorProtocol:
                 swapList.append([li[i][index],invertState(li[i][index])])
                 #print(li[i][0])
         return swapList
+    
+a = MirrorProtocol(6,0.1)  
