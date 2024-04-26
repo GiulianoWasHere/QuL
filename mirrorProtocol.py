@@ -40,5 +40,3 @@ class MirrorProtocol:
                 swapList.append([li[i][index],invertState(li[i][index])])
                 #print(li[i][0])
         return swapList
-    
-a = MirrorProtocol(6,0.1)  

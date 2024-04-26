@@ -8,11 +8,11 @@ from utils import *
 class OccupationProbabilitiesList:
     """
     ## OccupationProbabilitiesList(numQubits,excitedStateProbability)
-    Class for the list of occupation probabilities
+    Class for the list of occupation probabilities.
 
     Parameters:
         numQubits (int): Number of qubits.
-        excitedStateProbability (float): Probability of the excited state
+        excitedStateProbability (float): Probability of the excited state.
     Return:
         occupationProbabilitiesList (List)
     """
