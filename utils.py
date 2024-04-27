@@ -23,7 +23,7 @@ def printOccupationProbabilitiesList2(list,t,j):
 
 def subSetsOfSwaps(l):
         """
-        Private: Creation of subsets of swaps by a list of swaps.
+        Creation of subsets of swaps by a list of swaps.
         """
         subsets = [[]]
         dictionary  = {}

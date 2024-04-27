@@ -29,7 +29,9 @@ class MirrorProtocol:
         return CoolingUnitary(cls._numQubits,_swapList)
     
     def _algorithm(self,li):
-        #printOccupationProbabilitiesList(li)
+        """
+        Private: Algorithm for the Mirror Protocol.
+        """
         k = self._numQubits/2
         numberOfStates = 2 ** self._numQubits
         swapList = []
