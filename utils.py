@@ -21,6 +21,35 @@ def printOccupationProbabilitiesList2(list,t,j):
             print("*",end="")
         print()
 
+def subSetsOfSwaps(l):
+        """
+        Private: Creation of subsets of swaps by a list of swaps.
+        """
+        subsets = [[]]
+        dictionary  = {}
+        numOfSubsets = 0
+        #We put every swap inside of a dictionary until we find a repeated state. 
+        #When we find a repeated state we reset the dictionary and create a sublist
+        for i in range(len(l)):
+            reset = 0
+            if l[i][0] not in dictionary:
+                dictionary[l[i][0]] = 0
+            else:
+                reset = 1
+            if l[i][1] not in dictionary:
+                dictionary[l[i][1]] =  0
+            else:
+                reset = 1
+
+            if(reset == 1):
+                dictionary = {}
+                dictionary[l[i][0]] = 0
+                dictionary[l[i][1]] = 0
+                numOfSubsets += 1
+                subsets.append([])
+            subsets[numOfSubsets].append(l[i])
+
+        return subsets
 ###
 
 def invertState(s):
