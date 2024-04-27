@@ -119,6 +119,3 @@ class MinimalWorkProtocol:
                     else:
                         break
         return swapList
-    
-
-a = MinimalWorkProtocol(5,0.1)
