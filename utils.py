@@ -120,7 +120,12 @@ def checkUnitary(m):
             raise ValueError("Error")
             
         outputState = int(indices[0][0])
-        print(str(i) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits))
+        if(outputState == i):
+            print(str(i) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits))
+        else:
+            print(str(i) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits) + " (*)") 
+        if(i == (numberOfStates //2)-1):
+            print("-------------------------")
         #print(state)
         #print(matrix)
 
@@ -158,7 +163,10 @@ def checkUnitary2(m,excitedStateProbability):
         outputState = int(indices[0][0])
         numberOfZeros = countZeros(integerToBinary(outputState,numQubits))
         probability = (excitedStateProbability ** (numQubits - numberOfZeros)) * ((1 - excitedStateProbability)** numberOfZeros)
-        print(str(i) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits) + " | " + str(probability))
+        if(outputState == i):
+            print(str(i) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits) + " | " + str(probability))
+        else:
+            print(str(i) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits) + " | " + str(probability) + " (*)")
         if(i == (numberOfStates //2)-1):
             print("-------------------------")
         #print(state)

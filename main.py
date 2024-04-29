@@ -29,15 +29,15 @@ matrix_4x4 = np.array([[0, 0, 1, 0],
 lista = [[1,0,"010"],["100",7]]
 obj = CoolingUnitary(3,lista)
 
-print(obj)
-print(type(obj))
-checkUnitary(obj)
+#print(obj)
+#print(type(obj))
+#checkUnitary(obj)
 
 
 #a = PairingPartnerAlgorithm(5,0.1)
 #checkUnitary2(a,0.05)
 #a = MirrorProtocol(4,0.1)
 #checkUnitary2(a,0.05)
-a = MinimalWorkProtocol(5,0.05)
-checkUnitary2(a,0.1)
+a = MinimalWorkProtocol(4,0.05)
+checkUnitary(a)
 #print(a)
