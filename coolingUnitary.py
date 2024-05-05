@@ -68,16 +68,16 @@ class CoolingUnitary:
             if(count > 1):
                 raise ValueError("A swap state is used more than 1 time")
     
-    def printSwapList(self):
+    def printSwapList(cls):
         """
         Print swap list
         """
-        print(len(self._swapList))
-        for index in range(len(self._swapList)):
+        print(len(cls._swapList))
+        for index in range(len(cls._swapList)):
             stringa = ""
-            for i in range(len(self._swapList[index])):
-                stringa = stringa + self._swapList[index][i][-self._numQubits:] + "->"
-            print( stringa + self._swapList[index][0])
+            for i in range(len(cls._swapList[index])):
+                stringa = stringa + cls._swapList[index][i][-cls._numQubits:] + "->"
+            print( stringa + cls._swapList[index][0])
             
             print("")
        
@@ -109,3 +109,5 @@ class CoolingUnitary:
             self.coolingUnitary[element,element] = 0
             self.coolingUnitary[firstElement,element] = 1
             #print(i)     
+
+CoolingUnitary.printSwapList(CoolingUnitary)
