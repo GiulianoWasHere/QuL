@@ -4,6 +4,50 @@ import math
 
 ##Not the right place to put this 
 
+def coolingUnitaryToPermutationList(m):
+    """
+    Parameters:
+        CoolingUnitary (numpy.ndarray)
+    Return:
+        Permutation List (list)
+    """
+    # Check if the matrix is unitary
+    if(is_unitary(m) == False):
+        raise ValueError("Not an unitary Matrix")
+    
+    statesInSwapCycle = set()
+    numberOfStates = len(m)
+    #print(m)
+    permutationsList = []
+    for i in range(numberOfStates):
+        index = i
+        #If the state is NOT swapped with itself
+        if(m[index][index] != 1):
+            #Check if the state is NOT already inside of a swap cycle
+            if(index not in statesInSwapCycle):
+                l = [index]
+                #print(index)
+                statesInSwapCycle.add(index)
+                nextIndex = -1
+
+                #Find this state is swapped to
+                for j in range(len(m[i])):
+                    if(m[j][i] == 1):
+                        nextIndex = j
+                        break
+                #Cycle until we return to the starting state
+                while(index != nextIndex):
+                    #print(nextIndex)
+                    l.append(nextIndex)
+                    statesInSwapCycle.add(nextIndex)
+                    for j in range(len(m[nextIndex])):
+                        if(m[j][nextIndex] == 1):
+                            nextIndex = j
+                            break 
+                permutationsList.append(l)
+
+    return permutationsList
+
 def printOccupationProbabilitiesList(list):
     for i in range(len(list)):
         print(str(i), end=" | ")

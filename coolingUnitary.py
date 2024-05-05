@@ -10,12 +10,16 @@ class CoolingUnitary:
     Parameters:
         numQubits (int): Number of qubits.
         swapList (list): List to describe the states to be swapped.
-            EXAMPLE Single Swap: [["000","001"]] 000 <---> 001
-            EXAMPLE Single Swap with integer: [[0,1]] 000 (0) <---> 001 (1)
-            EXAMPLE Cycle of length 3: [["000","001","010"]] 000 --> 001 --> 010 --> 000
-            EXAMPLE 2 Cycles of length 2: [["000","001"], ["010","011"]] 000 <---> 001 , 010 <---> 011
     Return:
         coolingUnitary (numpy.ndarray)
+
+    EXAMPLES:
+
+    - Single Swap: `[["000","001"]] 000 <---> 001`
+    - Single Swap with integer: `[[0,1]] 000 (0) <---> 001 (1)`
+    - Cycle of length 3: `[["000","001","010"]] 000 --> 001 --> 010 --> 000`
+    - 2 Cycles of length 2: `[["000","001"], ["010","011"]] 000 <---> 001 , 010 <---> 011`
+    
     """
     
     _swapList = [["000","001"]]
@@ -23,15 +27,6 @@ class CoolingUnitary:
     coolingUnitary = None
 
     def __new__(cls,numQubits=_numQubits,swapList=_swapList):
-        """
-        Parameters:
-        numQubits (int): Number of qubits.
-        swapList (list): List to describe the states to be swapped.
-            EXAMPLE Single Swap: [["000","001"]] 000 <---> 001
-            EXAMPLE Single Swap with integer: [[0,1]] 000 (0) <---> 001 (1)
-            EXAMPLE Cycle of length 3: [["000","001","010"]] 000 --> 001 --> 010 --> 000
-            EXAMPLE 2 Cycles of length 2: [["000","001"], ["010","011"]] 000 <---> 001 , 010 <---> 011
-        """
         cls._checkInputParameters(cls,numQubits,swapList)
         cls._numQubits = numQubits
         cls._swapList = swapList
@@ -68,10 +63,8 @@ class CoolingUnitary:
             if(count > 1):
                 raise ValueError("A swap state is used more than 1 time")
     
-    def printSwapList(cls):
-        """
-        Print swap list
-        """
+    """ def printSwapList(cls):
+        #Print swap list
         print(len(cls._swapList))
         for index in range(len(cls._swapList)):
             stringa = ""
@@ -79,9 +72,8 @@ class CoolingUnitary:
                 stringa = stringa + cls._swapList[index][i][-cls._numQubits:] + "->"
             print( stringa + cls._swapList[index][0])
             
-            print("")
+            print("") """
        
-
     def _makeMatrix(self):
         """
         Private: Creation of the Unitary. 
@@ -94,8 +86,6 @@ class CoolingUnitary:
                 
                 element = binaryToInteger(self._swapList[index][i])
                 succElement = binaryToInteger(self._swapList[index][i+1])
-                #print(element)
-                #print(succElement)
 
                 #Remove the 1 in the diagonal
                 self.coolingUnitary[element,element] = 0
@@ -108,6 +98,3 @@ class CoolingUnitary:
             
             self.coolingUnitary[element,element] = 0
             self.coolingUnitary[firstElement,element] = 1
-            #print(i)     
-
-CoolingUnitary.printSwapList(CoolingUnitary)

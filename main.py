@@ -6,6 +6,7 @@ from occupationProbabilitiesList import OccupationProbabilitiesList
 from mirrorProtocol import MirrorProtocol
 from pairingPartnerAlgorithm import PairingPartnerAlgorithm
 from minimalWorkProtocol import MinimalWorkProtocol
+from coolingCircuit import CoolingCircuit
 from utils import *
 
 #TEST
@@ -33,11 +34,11 @@ obj = CoolingUnitary(3,lista)
 #print(type(obj))
 #checkUnitary(obj)
 
-
+print(type(CoolingCircuit(numQubits=3,coolingUnitary=MirrorProtocol(3))))
 #a = PairingPartnerAlgorithm(5,0.1)
 #checkUnitary2(a,0.05)
 #a = MirrorProtocol(4,0.1)
 #checkUnitary2(a,0.05)
-a = MinimalWorkProtocol(4,0.05)
-checkUnitary(a)
+#a = MinimalWorkProtocol(4,0.05)
+#checkUnitary(a)
 #print(a)
