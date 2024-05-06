@@ -46,7 +46,7 @@ obj = CoolingUnitary(3,lista)
 #checkUnitary(a)
 #print(a)
 
-n = 9
+n = 5
 start_time = time.time()
 
 m = MinimalWorkProtocol(n)
@@ -59,7 +59,6 @@ print(time.time() - start_time)
 
 circu = CoolingCircuit(n,l)
 
-#cooling_circuit = QuantumCircuit(n)
-#cooling_circuit.append(UnitaryGate(m),range(n))
-
 print(time.time() - start_time)
+
+testCircuit(circu)

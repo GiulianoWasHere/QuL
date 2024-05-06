@@ -75,7 +75,7 @@ class CoolingCircuit:
                                     xList.append(z)
                         if xList:
                             circuit.x(xList)
-                        
+     
                         #MCX Gate with target in the (numQubit - j - 1) position and control in the rest of the qubits
                         rangeOfMCX = list(range(0,opposite)) + list(range(opposite + 1,numQubit))
                         circuit.mcx(list(rangeOfMCX),opposite)
@@ -94,13 +94,13 @@ class CoolingCircuit:
                         circuit.barrier()
 
                         stack.append(circuit)
-                        finalCircuit = finalCircuit.compose(circuit)
+                        finalCircuit.compose(circuit,inplace=True)
 
                 #Using the stack we create the uncomputation circuit
                 #We discard the first element since we don't need it for the uncompuation
                 stack.pop()
                 while(len(stack)):
-                    finalCircuit = finalCircuit.compose(stack.pop())
+                    finalCircuit.compose(stack.pop(),inplace=True)
 
         return finalCircuit
     
