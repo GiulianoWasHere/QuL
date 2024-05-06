@@ -1,5 +1,7 @@
 from collections import Counter
 import numpy as np
+import time
+
 
 from coolingUnitary import CoolingUnitary
 from occupationProbabilitiesList import OccupationProbabilitiesList
@@ -8,7 +10,9 @@ from pairingPartnerAlgorithm import PairingPartnerAlgorithm
 from minimalWorkProtocol import MinimalWorkProtocol
 from coolingCircuit import CoolingCircuit
 from utils import *
+from quantumUtils import *
 
+from qiskit.circuit.library import UnitaryGate
 #TEST
 testMatrix = np.eye((4))
 
@@ -34,7 +38,6 @@ obj = CoolingUnitary(3,lista)
 #print(type(obj))
 #checkUnitary(obj)
 
-print(type(CoolingCircuit(numQubits=3,coolingUnitary=MirrorProtocol(3))))
 #a = PairingPartnerAlgorithm(5,0.1)
 #checkUnitary2(a,0.05)
 #a = MirrorProtocol(4,0.1)
@@ -42,3 +45,21 @@ print(type(CoolingCircuit(numQubits=3,coolingUnitary=MirrorProtocol(3))))
 #a = MinimalWorkProtocol(4,0.05)
 #checkUnitary(a)
 #print(a)
+
+n = 9
+start_time = time.time()
+
+m = MinimalWorkProtocol(n)
+
+print(time.time() - start_time)
+
+l = CoolingCircuit.coolingUnitaryToPermutationList(m)
+
+print(time.time() - start_time)
+
+circu = CoolingCircuit(n,l)
+
+#cooling_circuit = QuantumCircuit(n)
+#cooling_circuit.append(UnitaryGate(m),range(n))
+
+print(time.time() - start_time)

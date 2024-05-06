@@ -48,7 +48,7 @@ class CoolingCircuit:
         Parameters:
             Permutation List (list)
         Return:
-            Cooling Circuit 
+            Cooling Circuit (QuantumCircuit)
         """
         CoolingUnitary._checkInputParameters(CoolingUnitary,numQubit,l)
 
@@ -68,20 +68,21 @@ class CoolingCircuit:
                     if(integerToBinary(l[i][t],numQubit)[j] != integerToBinary(l[i][t-1],numQubit)[j]):
                         
                         #Add X gates when the qubit is in the state 0 so all control are in the 1 state
+                        xList = []
                         for z in range(len(stateIn)):
                             if(z != opposite):
                                 if(stateIn[z] == '0'):
-                                    circuit.x(z)
+                                    xList.append(z)
+                        if xList:
+                            circuit.x(xList)
                         
                         #MCX Gate with target in the (numQubit - j - 1) position and control in the rest of the qubits
                         rangeOfMCX = list(range(0,opposite)) + list(range(opposite + 1,numQubit))
                         circuit.mcx(list(rangeOfMCX),opposite)
 
-                        #Add X gates when the qubit is in the state 0 so all control are in the 1 state             
-                        for z in range(len(stateIn)):
-                            if(z != opposite):
-                                if(stateIn[z] == '0'):
-                                    circuit.x(z)
+                        #Add X gates when the qubit is in the state 0 so all control are in the 1 state
+                        if xList:             
+                            circuit.x(xList)
 
                         #Change the state in to match the state after applying the gate              
                         if(stateIn[opposite] == '0'):
