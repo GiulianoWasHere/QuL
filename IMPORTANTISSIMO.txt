@@ -1,0 +1,13 @@
+Qiskit Unitary gate
+3	32     
+4	202    
+5	960   
+6	4150
+7	17104
+8       OrderedDict([('rz', 246346), ('sx', 167864), ('ecr', 69524), ('x', 14910)])
+
+My circuit
+3	OrderedDict([('rz', 172), ('sx', 114), ('ecr', 48), ('x', 17)])
+4	OrderedDict([('rz', 705), ('sx', 503), ('ecr', 175), ('x', 22)])
+5	OrderedDict([('rz', 9853), ('sx', 6724), ('ecr', 3057), ('x', 840)])
+6 	OrderedDict([('rz', 35563), ('sx', 24213),('ecr', 10904), ('x', 2948), ('barrier', 67)])

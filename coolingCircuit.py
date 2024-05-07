@@ -34,12 +34,19 @@ class CoolingCircuit:
 
         if(cls._numQubits == None):
             raise ValueError("Specify number of qubits.")
-        if(cls._permutationList == None and type(cls._coolingUnitary) is not np.ndarray):
+        if(cls._permutationList is None and cls._coolingUnitary is None):
             raise ValueError("Specify a Permutation List or a Cooling Matrix.")
-        if(cls._permutationList != None):
+        if(cls._permutationList is list):
             return cls.permutationListToCircuit(cls._permutationList,numQubits)
+        
+        if(type(cls._permutationList) is np.ndarray):
+            return cls.permutationListToCircuit(cls.coolingUnitaryToPermutationList(cls._permutationList),cls._numQubits)
+        if(type(cls._coolingUnitary) is np.ndarray):
+            return cls.permutationListToCircuit(cls.coolingUnitaryToPermutationList(cls._coolingUnitary),cls._numQubits)
+        raise ValueError("Input neither a list of permutations or an np.ndarray.")
 
-        return cls.permutationListToCircuit(cls.coolingUnitaryToPermutationList(cls._coolingUnitary),cls._numQubits)
+    def is_numpy_array(matrix):
+        return isinstance(matrix[0], np.ndarray)
 
     def permutationListToCircuit(l,numQubit):
         """
@@ -55,7 +62,7 @@ class CoolingCircuit:
         qreg_q = qk.QuantumRegister(numQubit, 'q')
         creg_c = qk.ClassicalRegister(numQubit, 'c')
         finalCircuit = QuantumCircuit(qreg_q, creg_c)
-        finalCircuit.barrier()
+        #finalCircuit.barrier()
         for i in range(len(l)):
             stateIn = integerToBinary(l[i][len(l[i])-2],numQubit)[::-1]
             stack = []
@@ -91,7 +98,7 @@ class CoolingCircuit:
                             stateIn = stateIn[:opposite] + '0' + stateIn[opposite + 1:]
 
 
-                        circuit.barrier()
+                        #circuit.barrier()
 
                         stack.append(circuit)
                         finalCircuit.compose(circuit,inplace=True)
