@@ -11,3 +11,4 @@ My circuit
 4	OrderedDict([('rz', 705), ('sx', 503), ('ecr', 175), ('x', 22)])
 5	OrderedDict([('rz', 9853), ('sx', 6724), ('ecr', 3057), ('x', 840)])
 6 	OrderedDict([('rz', 35563), ('sx', 24213),('ecr', 10904), ('x', 2948), ('barrier', 67)])
+7   OrderedDict([('rz', 358647),('sx', 242698), ('ecr', 102799), ('x', 17255), ('barrier', 311)])
