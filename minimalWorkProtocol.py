@@ -5,6 +5,9 @@ from coolingUnitary import CoolingUnitary
 from occupationProbabilitiesList import OccupationProbabilitiesList
 from utils import *
 
+#remove
+import time
+
 class MinimalWorkProtocol:
     """
     ## MinimalWorkProtocol(numQubits,excitedStateProbability)
@@ -22,19 +25,27 @@ class MinimalWorkProtocol:
     _swapList = []
 
     def __new__(cls,numQubits=_numQubits,excitedStateProbability=_excitedStateProbability):
+
+        #start_time = time.time()
+        #string = ""
+        
         cls._numQubits = numQubits
         cls._excitedStateProbability = excitedStateProbability
         cls._probabilitiesList = OccupationProbabilitiesList(cls._numQubits,cls._excitedStateProbability)
         _swapList = cls._algorithm2(cls,cls._probabilitiesList)
 
+        #string += "After Algo: " + str(time.time() - start_time) + '\n'
         #The list of swaps is split in N subsets
         _ListSubSetOfSwaps  = subSetsOfSwaps(_swapList)
-
+        #string += "After SubsetOfSwaps: " + str(time.time() - start_time) + '\n'
         #A matrix for every subset is created and multiplied into one
-        _matrix = CoolingUnitary(cls._numQubits,_ListSubSetOfSwaps[0])
+        #_matrix = CoolingUnitary(cls._numQubits,_ListSubSetOfSwaps[0])
+        #string += "Matrix one: " + str(time.time() - start_time) + '\n'
         for i in range(1,len(_ListSubSetOfSwaps)):
             _matrix = CoolingUnitary(cls._numQubits,_ListSubSetOfSwaps[i]).dot(_matrix)
+            #string += "Matrix " + str(i) + " " + str(time.time() - start_time) + '\n'
 
+        #print(string)
         #checkUnitary2(_matrix,cls._excitedStateProbability)
         return _matrix
     
@@ -119,3 +130,6 @@ class MinimalWorkProtocol:
                     else:
                         break
         return swapList
+    
+
+a = MinimalWorkProtocol(5)
