@@ -1,5 +1,6 @@
 from collections import Counter
 import numpy as np
+from scipy.sparse import csr_array
 from utils import *
 
 class CoolingUnitary:
@@ -62,39 +63,44 @@ class CoolingUnitary:
         for element,count in counts.items():
             if(count > 1):
                 raise ValueError("A swap state is used more than 1 time")
-    
-    """ def printSwapList(cls):
-        #Print swap list
-        print(len(cls._swapList))
-        for index in range(len(cls._swapList)):
-            stringa = ""
-            for i in range(len(cls._swapList[index])):
-                stringa = stringa + cls._swapList[index][i][-cls._numQubits:] + "->"
-            print( stringa + cls._swapList[index][0])
-            
-            print("") """
        
     def _makeMatrix(self):
         """
         Private: Creation of the Unitary. 
         """ 
         numOfStates = 2**self._numQubits
-        self.coolingUnitary = np.eye((numOfStates))
-
+        #self.coolingUnitary = np.eye((numOfStates))
+        row = []
+        col = []
+        data = [1]*numOfStates
+        v = [-1] * numOfStates
         for index in range(len(self._swapList)):
             for i in range(len(self._swapList[index])-1):
                 
                 element = binaryToInteger(self._swapList[index][i])
                 succElement = binaryToInteger(self._swapList[index][i+1])
 
-                #Remove the 1 in the diagonal
-                self.coolingUnitary[element,element] = 0
-                #Insert the 1 in the column of the state and row of the state to swap 
-                self.coolingUnitary[succElement,element] = 1
+                #Insert in the vector the element we want to swap to
+                v[element] = succElement
 
             #Same thing as above but last state in the cycle is matched with the first one
             element = binaryToInteger(self._swapList[index][len(self._swapList[index])-1])
             firstElement = binaryToInteger(self._swapList[index][0])
             
-            self.coolingUnitary[element,element] = 0
-            self.coolingUnitary[firstElement,element] = 1
+            v[element] = firstElement
+
+        #Using the created vector we can create the matrix
+        #If v[i] == -1 the state is matched with itself, otherwise we use the vector
+        #To determinate the state to swap to
+        for i in range(numOfStates):
+            if(v[i] == -1):
+                row.append(i) 
+                col.append(i) 
+            else:
+                row.append(v[i])
+                col.append(i)
+        
+        self.coolingUnitary = csr_array((data, (row, col)), shape=(numOfStates, numOfStates))
+
+
+

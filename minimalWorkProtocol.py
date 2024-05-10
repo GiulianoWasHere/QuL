@@ -5,9 +5,6 @@ from coolingUnitary import CoolingUnitary
 from occupationProbabilitiesList import OccupationProbabilitiesList
 from utils import *
 
-#remove
-import time
-
 class MinimalWorkProtocol:
     """
     ## MinimalWorkProtocol(numQubits,excitedStateProbability)
@@ -26,27 +23,18 @@ class MinimalWorkProtocol:
 
     def __new__(cls,numQubits=_numQubits,excitedStateProbability=_excitedStateProbability):
 
-        #start_time = time.time()
-        #string = ""
-        
         cls._numQubits = numQubits
         cls._excitedStateProbability = excitedStateProbability
         cls._probabilitiesList = OccupationProbabilitiesList(cls._numQubits,cls._excitedStateProbability)
         _swapList = cls._algorithm2(cls,cls._probabilitiesList)
 
-        #string += "After Algo: " + str(time.time() - start_time) + '\n'
         #The list of swaps is split in N subsets
         _ListSubSetOfSwaps  = subSetsOfSwaps(_swapList)
-        #string += "After SubsetOfSwaps: " + str(time.time() - start_time) + '\n'
+    
         #A matrix for every subset is created and multiplied into one
-        #_matrix = CoolingUnitary(cls._numQubits,_ListSubSetOfSwaps[0])
-        #string += "Matrix one: " + str(time.time() - start_time) + '\n'
+        _matrix = CoolingUnitary(cls._numQubits,_ListSubSetOfSwaps[0])
         for i in range(1,len(_ListSubSetOfSwaps)):
             _matrix = CoolingUnitary(cls._numQubits,_ListSubSetOfSwaps[i]).dot(_matrix)
-            #string += "Matrix " + str(i) + " " + str(time.time() - start_time) + '\n'
-
-        #print(string)
-        #checkUnitary2(_matrix,cls._excitedStateProbability)
         return _matrix
     
     def _listOfIndexes2(self,li,index,numberOfStates):
@@ -69,7 +57,7 @@ class MinimalWorkProtocol:
         del li[len(li)-1]
         return element
     
-    #very long name
+    #very long name self explanatory
     def _checkIfMaxProbabilityIsOnTopHalfList(self,dictionary,halfOfStates):
         """
         Private: Returns true if the highest probabilites are on the top half of the list.
@@ -78,10 +66,8 @@ class MinimalWorkProtocol:
         for element, indexes in dictionary.items():
             for i in range(len(indexes)):
                 if(count > halfOfStates):
-                    #print(indexes[i][1])
                     return True
                 if(indexes[i][1] >= halfOfStates):
-                    #print(indexes[i][1])
                     return False
                 count +=1
     
@@ -91,7 +77,7 @@ class MinimalWorkProtocol:
         """
         numberOfStates = 2 ** self._numQubits
     	#Index of the probabilities 
-        index = 2
+        index = 1
         halfOfStates = numberOfStates // 2
 
         swapList = []
@@ -131,5 +117,3 @@ class MinimalWorkProtocol:
                         break
         return swapList
     
-
-a = MinimalWorkProtocol(5)

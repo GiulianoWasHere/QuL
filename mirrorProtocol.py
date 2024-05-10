@@ -40,5 +40,4 @@ class MirrorProtocol:
         for i in range(0,int(numberOfStates/2)):
             if(k > countZeros(li[i][index])):
                 swapList.append([li[i][index],invertState(li[i][index])])
-                #print(li[i][0])
         return swapList

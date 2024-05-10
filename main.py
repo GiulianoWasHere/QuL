@@ -2,6 +2,9 @@ from collections import Counter
 import numpy as np
 import time
 
+from scipy.sparse import bsr_array
+from scipy.sparse import csr_array
+from scipy.sparse import coo_array
 
 from coolingUnitary import CoolingUnitary
 from occupationProbabilitiesList import OccupationProbabilitiesList
@@ -31,8 +34,8 @@ matrix_4x4 = np.array([[0, 0, 1, 0],
 #obj = CoolingUnitary(numQubits=3,swapList=lista)
 
 
-lista = [[1,0,"010"],["100",7]]
-obj = CoolingUnitary(3,lista)
+#lista = [[1,0,"010"],["100",7]]
+#obj = CoolingUnitary(3,lista)
 
 #print(obj)
 #print(type(obj))
@@ -46,7 +49,9 @@ obj = CoolingUnitary(3,lista)
 #checkUnitary(a)
 #print(a)
 
-n = 5
+
+
+""" n = 5
 start_time = time.time()
 
 m = MinimalWorkProtocol(n)
@@ -61,4 +66,66 @@ circu = CoolingCircuit(n,l)
 
 print(time.time() - start_time)
 
-testCircuit(circu)
+testCircuit(circu) """
+
+""" n= 5
+a = MinimalWorkProtocol(5)
+
+
+
+print(p) """
+
+
+#matrix = bsr_array((3, 4), dtype=np.int8)
+#print(matrix.toarray())
+
+""" #print(m)
+#print(m)
+row = [0, 1, 2]
+col = [2, 1, 0]
+data = [1]*3
+#print(data)
+matrix = csr_array((data, (row, col)), shape=(3, 3))
+
+matrix2 = csr_array((3, 3), dtype=np.int8)
+
+#matrix = matrix.dot(matrix2)
+
+#print(matrix.toarray()) """
+n = 20
+
+start_time = time.time()
+
+m = MinimalWorkProtocol(n)
+#print()
+print(time.time() - start_time)
+
+print(m.toarray())
+#m = MinimalWorkProtocol(n)
+#checkUnitary2(m.toarray(),0.1)
+""" #print(m)
+p = CoolingCircuit.coolingUnitaryToPermutationList(m)
+print("SPAZIO")
+m = CoolingUnitary(n,p)
+b = CoolingUnitary2(n,p)
+#np.savetxt('text.txt',m,fmt='%.0f')
+bM = b.toarray()
+ """
+#np.savetxt('text2.txt',b.toarray(),fmt='%.0f')
+#print((m==b.toarray()).all())
+
+""" N = 2**n
+for i in range(N):
+    stringa = ""
+    for j in range(N):
+        #stringa += str(int(m[i][j])) + " "
+        #stringa += str(int(bM[i][j])) + " "
+        if(bM[i][j] != m[i][j]):
+            print("POSIZIONE: " + str(i) +","+ str(j))
+    #print(stringa)
+"""
+#print((m==bM).all())
+
+#circ = UnitaryGate(b.toarray())
+
+#testCircuit(circ)

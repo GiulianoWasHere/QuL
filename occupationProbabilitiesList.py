@@ -37,7 +37,7 @@ class OccupationProbabilitiesList:
         for i in range(numberOfStates):
             numberOfZeros = countZeros(integerToBinary(i,numQubits))
 
-            #Create the string x(1-x)
+            """ #Create the string x(1-x)
             string = ""
             if(numQubits - numberOfZeros != 0):
                 string += "x" 
@@ -46,9 +46,9 @@ class OccupationProbabilitiesList:
             if(numberOfZeros != 0):
                 string += "(1 - x)"
                 if(numberOfZeros != 1):
-                    string += "^" + str(numberOfZeros)
+                    string += "^" + str(numberOfZeros) """
             #calculate the probability of x^..(1 - x)^.. for each state
             probability = (excitedStateProbability ** (numQubits - numberOfZeros)) * ((1 - excitedStateProbability)** numberOfZeros)
             #Put the element in the list
-            _List.append([integerToBinary(i,numQubits),string,probability])
+            _List.append([integerToBinary(i,numQubits),probability])
         return _List

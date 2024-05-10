@@ -40,8 +40,7 @@ class PairingPartnerAlgorithm:
         #checkUnitary2(_matrix,cls._excitedStateProbability)
 
         return _matrix
-
-    #Same cost it is possible to optmize it to run faster. (Still to optimize) 
+ 
     def _minSwapsAlgorithm(self,li):
         """
         Private: Minimum swap algorithm.
@@ -49,19 +48,22 @@ class PairingPartnerAlgorithm:
         #index of the list to compare, in this case in the list we have ["00",x^2, 0.8..]
         #so the third element is the one we want to compare
         swapListWithStates = []
-        index = 2
+        index = 1
         l = li.copy()
         #Creation of a copy of the list that is sort
         tempList = l.copy()
         tempList.sort(key=lambda x: x[index],reverse=True)
 
+        
         #We compare the sorted list with the not sorted list to find the optimal swaps
-        for i in range(len(l)):
+        length = len(l)
+        for i in range(length):
             if(l[i][index] != tempList[i][index]):
                 element = -1 
-                for j in range(len(l)):
+                for j in range(length-1,-1,-1):
                     if (l[j][index] == tempList[i][index]):
                         element = j
+                        break
                 swapListWithStates.append([l[i][0],l[element][0]])
 
                 #Swap an element in the list
