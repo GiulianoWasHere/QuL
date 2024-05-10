@@ -92,11 +92,11 @@ matrix2 = csr_array((3, 3), dtype=np.int8)
 #matrix = matrix.dot(matrix2)
 
 #print(matrix.toarray()) """
-n = 20
+n = 23
 
 start_time = time.time()
 
-m = MinimalWorkProtocol(n)
+m = MirrorProtocol(n)
 #print()
 print(time.time() - start_time)
 
