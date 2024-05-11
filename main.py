@@ -92,15 +92,15 @@ matrix2 = csr_array((3, 3), dtype=np.int8)
 #matrix = matrix.dot(matrix2)
 
 #print(matrix.toarray()) """
-n = 23
+n = 15
 
 start_time = time.time()
 
-m = MirrorProtocol(n)
+m = PairingPartnerAlgorithm(n)
 #print()
 print(time.time() - start_time)
 
-print(m.toarray())
+#print(m.toarray())
 #m = MinimalWorkProtocol(n)
 #checkUnitary2(m.toarray(),0.1)
 """ #print(m)
