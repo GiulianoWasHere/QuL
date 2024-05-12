@@ -4,6 +4,7 @@ import numpy as np
 from coolingUnitary import CoolingUnitary
 from occupationProbabilitiesList import OccupationProbabilitiesList
 from utils import *
+import bisect 
 
 class PairingPartnerAlgorithm:
     """
@@ -103,19 +104,17 @@ class PairingPartnerAlgorithm:
                     #We have two vectors to get the state the swap,
                     #The first one is created at the beginning
                     #The second one every state that is swapped is insert into it
+                    #We check if the state at the lowest point in the list is in the
+                    #first vector or in the second one
                     if(elementToCompare < elementToCompare2):
                         arrayToPop = vectDictionary[dictionaryIndex[probability]]
                     else:
                         arrayToPop = arrayAdded
                     element = arrayToPop.pop()
 
+                    #insert the element we swapped in the second vector
                     arrayAdded3 = vectAdded[dictionaryIndex[l[i][index]]]
-                    elementToCompare3 = arrayAdded3[len(arrayAdded3)-1][1]
-
-                    arrayAdded3.append([l[i][0],element[1]])
-
-                    if(elementToCompare3 > element[1]):
-                        vectAdded[dictionaryIndex[l[i][index]]].sort(key=lambda x: x[1])
+                    bisect.insort(arrayAdded3,[l[i][0],element[1]],key=lambda x: x[1])
 
                     swapListWithStates.append([l[i][0],element[0]])
 
@@ -124,206 +123,5 @@ class PairingPartnerAlgorithm:
                     l[i] = l[element[1]]
                     l[element[1]] = temp
                 i +=1
+                
         return swapListWithStates
-
-    def _minSwapsAlgorithm4(self,li):
-        """
-        Private: Minimum swap algorithm.
-        """
-        #index of the list to compare, in this case in the list we have ["00",x^2, 0.8..]
-        #so the third element is the one we want to compare
-        swapListWithStates = []
-        index = 1
-        l = li.copy()
-        #Creation of a copy of the list that is sort
-        tempList = l.copy()
-        tempList.sort(key=lambda x: x[index],reverse=True)
-
-        
-        #We compare the sorted list with the not sorted list to find the optimal swaps
-        length = len(l)
-        dictionary,dictionaryIndex = self._listOfIndexes(self,li,index,length)
-
-        #print(dictionary)
-        #print(dictionaryIndex)
-
-        vectDictionary = []
-        for element, indexes in dictionary.items():
-            vectDictionary.append(indexes)
-
-        vectAdded = []
-        for i in range(len(vectDictionary)):
-            vectAdded.append([["",-1]])
-        
-        #print(vectAdded)
-        #print(vectDictionary)
-        #self.printVector(vectDictionary)
-        for i in range(length):
-            if(l[i][index] != tempList[i][index]):
-                
-                arrayAdded = vectAdded[dictionaryIndex[tempList[i][index]]]
-                elementToCompare = arrayAdded[len(arrayAdded)-1][1]
-
-                #print(elementToCompare)
-                arrayAdded2 = vectDictionary[dictionaryIndex[tempList[i][index]]]
-                elementToCompare2 = arrayAdded2[len(arrayAdded2)-1][1]
-
-                #print(elementToCompare,elementToCompare2)
-                if(elementToCompare < elementToCompare2):
-                    arrayToPop = vectDictionary[dictionaryIndex[tempList[i][index]]]
-                else:
-                    arrayToPop = arrayAdded
-                element = arrayToPop.pop()
-                """ print()
-                print(l[i][index])
-                print(element)
-                print() """
-                arrayAdded3 = vectAdded[dictionaryIndex[l[i][index]]]
-                elementToCompare3 = arrayAdded3[len(arrayAdded3)-1][1]
-
-                arrayAdded3.append([l[i][0],element[1]])
-
-                #vectAdded[dictionaryIndex[l[i][index]]].append([l[i][0],element[1]])
-
-                if(elementToCompare3 > element[1]):
-                    vectAdded[dictionaryIndex[l[i][index]]].sort(key=lambda x: x[1])
-
-                
-                #print(arrayAdded)
-                """ print(element)
-                self.printVector(vectAdded)
-                print() """
-
-                #print(state,element[0])
-                swapListWithStates.append([l[i][0],element[0]])
-                #print(swapListWithStates)
-
-                #Swap an element in the list
-                #print(l[i],l[oldindex])
-                temp = l[i]
-                l[i] = l[element[1]]
-                l[element[1]] = temp
-                #return 1
-
-        #print(swapListWithStates)
-        return swapListWithStates
-
-    def _minSwapsAlgorithm3(self,li):
-        """
-        Private: Minimum swap algorithm.
-        """
-        #index of the list to compare, in this case in the list we have ["00",x^2, 0.8..]
-        #so the third element is the one we want to compare
-        swapListWithStates = []
-        index = 1
-        l = li.copy()
-        #Creation of a copy of the list that is sort
-        tempList = l.copy()
-        tempList.sort(key=lambda x: x[index],reverse=True)
-
-        
-        #We compare the sorted list with the not sorted list to find the optimal swaps
-        length = len(l)
-        dictionary,dictionaryIndex = self._listOfIndexes(self,li,index,length)
-
-        #print(dictionary)
-        #print(dictionaryIndex)
-
-        vectDictionary = []
-        for element, indexes in dictionary.items():
-            vectDictionary.append(indexes)
-        
-        #self.printVector(vectDictionary)
-        for i in range(length):
-            if(l[i][index] != tempList[i][index]):
-                
-
-                arrayToPop = vectDictionary[dictionaryIndex[tempList[i][index]]]
-                element = arrayToPop.pop()
-                """ print()
-                print(l[i][index])
-                print(element)
-                print() """
-                array = vectDictionary[dictionaryIndex[l[i][index]]]
-                oldindex = -1
-                state = ""
-                for k in range(len(array)):
-                    #print(l[i][0] + "  "+ array[k][0])
-                    if(l[i][0] == array[k][0]):
-                        oldindex = element[1]
-                        element[1] = array[k][1]
-                        state = array[k][0]
-                        del array[k]
-                        break
-                
-                #print(len(arrayToPop)-1)
-                if(element[1] > arrayToPop[len(arrayToPop)-1][1]):
-                    arrayToPop.append(element)
-                else:
-                    for z in range(len(arrayToPop)):
-                        if(element[1] < arrayToPop[z][1]):
-                            arrayToPop.insert(z,element)
-                            break
-
-                if(oldindex > array[len(array)-1][1]):
-                    array.append([state,oldindex])
-                else:
-                    for t in range(len(array)):
-                        if(oldindex < array[t][1]):
-                            array.insert(t,[state,oldindex])
-                            break
-                
-                #self.printVector(vectDictionary)
-
-                #print(state,element[0])
-                swapListWithStates.append([state,element[0]])
-                #print(swapListWithStates)
-
-                #Swap an element in the list
-                #print(l[i],l[oldindex])
-                temp = l[i]
-                l[i] = l[oldindex]
-                l[oldindex] = temp
-                #return 1
-
-        #print(swapListWithStates)
-        return swapListWithStates
-    
-    def _minSwapsAlgorithm2(self,li):
-        """
-        Private: Minimum swap algorithm.
-        """
-        #index of the list to compare, in this case in the list we have ["00",x^2, 0.8..]
-        #so the third element is the one we want to compare
-        swapListWithStates = []
-        index = 1
-        l = li.copy()
-        #Creation of a copy of the list that is sort
-        tempList = l.copy()
-        tempList.sort(key=lambda x: x[index],reverse=True)
-
-        
-        #We compare the sorted list with the not sorted list to find the optimal swaps
-        length = len(l)
-        for i in range(length):
-            if(l[i][index] != tempList[i][index]):
-                element = -1 
-                for j in range(length-1,-1,-1):
-                    if (l[j][index] == tempList[i][index]):
-                        element = j
-                        break
-                swapListWithStates.append([l[i][0],l[element][0]])
-
-                #Swap an element in the list
-                temp = l[i]
-                l[i] = l[element]
-                l[element] = temp
-
-        #print(swapListWithStates)
-        return swapListWithStates
-    
-#m = PairingPartnerAlgorithm(8)
-
-#checkUnitary2(m.toarray(),0.1)
-
-#Provare la nom Strat, magiare il primo elemento con un pop e poi inserire l'elemento nella lista piu in basso

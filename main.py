@@ -92,13 +92,18 @@ matrix2 = csr_array((3, 3), dtype=np.int8)
 #matrix = matrix.dot(matrix2)
 
 #print(matrix.toarray()) """
-n = 15
+n = 4
 
-start_time = time.time()
+#start_time = time.time()
 
 m = PairingPartnerAlgorithm(n)
 #print()
-print(time.time() - start_time)
+#print(time.time() - start_time)
+
+a = CoolingCircuit.compressedCoolingUnitaryToPermutationList(m)
+
+#print(m.indices[1])
+
 
 #print(m.toarray())
 #m = MinimalWorkProtocol(n)
