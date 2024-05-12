@@ -9,7 +9,8 @@ from scipy.sparse import coo_array
 from coolingUnitary import CoolingUnitary
 from occupationProbabilitiesList import OccupationProbabilitiesList
 from mirrorProtocol import MirrorProtocolUnitary
-from pairingPartnerAlgorithm import PairingPartnerAlgorithmUnitary
+from mirrorProtocol import MirrorProtocolCircuit
+from pairingPartnerAlgorithm import PartnerPairingAlgorithmUnitary
 from pairingPartnerAlgorithm import PartnerPairingAlgorithmCircuit
 from minimalWorkProtocol import MinimalWorkProtocolUnitary
 from minimalWorkProtocol import MinimalWorkProtocolCircuit
@@ -94,11 +95,11 @@ matrix2 = csr_array((3, 3), dtype=np.int8)
 #matrix = matrix.dot(matrix2)
 
 #print(matrix.toarray()) """
-n = 12
+n = 5
 
 start_time = time.time()
 
-c = PartnerPairingAlgorithmCircuit(n)
+m = PartnerPairingAlgorithmUnitary(n)
 #m = MinimalWorkProtocolUnitary(n)
 #p = CoolingCircuit.coolingUnitaryToPermutationList(m.toarray())
 #CoolingCircuit(n,p)
@@ -106,9 +107,11 @@ c = PartnerPairingAlgorithmCircuit(n)
 #print()
 print(time.time() - start_time)
 
-c.draw(filename="circuit.txt")
+checkUnitary2(m.toarray(),0.1)
 
-testCircuit(c)
+""" c.draw(filename="circuit.txt")
+
+testCircuit(c) """
 #checkUnitary2(m.toarray(),0.1)
 """ a = CoolingCircuit.compressedCoolingUnitaryToPermutationList(m)
 

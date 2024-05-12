@@ -17,7 +17,7 @@ class MirrorProtocolUnitary:
     Return:
         Cooling Unitary (scipy.sparse.csr_array)
     Notes:
-        Using the function .toarray() is possible to get a numpy.ndarray.
+        Use the function .toarray() to get a numpy.ndarray.
     """
     _numQubits = 3
     _excitedStateProbability = 0.1

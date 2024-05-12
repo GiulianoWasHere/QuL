@@ -7,10 +7,10 @@ from utils import *
 import bisect 
 from coolingCircuit import CoolingCircuit
 
-class PairingPartnerAlgorithmUnitary:
+class PartnerPairingAlgorithmUnitary:
     """
-    ## PairingPartnerAlgorithm(numQubits,excitedStateProbability)
-    Class for the Pairing Partner Algorithm.
+    ## PartnerPairingAlgorithmUnitary(numQubits,excitedStateProbability)
+    Class for the Partner Pairing Algorithm.
 
     Parameters:
         numQubits (int): Number of qubits.
@@ -18,7 +18,7 @@ class PairingPartnerAlgorithmUnitary:
     Return:
         Cooling Unitary (scipy.sparse.csr_array)
     Notes:
-        Using the function .toarray() is possible to get a numpy.ndarray.
+        Use the function .toarray() to get a numpy.ndarray.
     """
     _numQubits = 2
     _excitedStateProbability = 0.1
@@ -148,5 +148,5 @@ class PartnerPairingAlgorithmCircuit:
 
         cls._numQubits = numQubits
         cls._excitedStateProbability = excitedStateProbability
-        permutations = CoolingCircuit.compressedCoolingUnitaryToPermutationList(PairingPartnerAlgorithmUnitary(cls._numQubits,cls._excitedStateProbability))
+        permutations = CoolingCircuit.compressedCoolingUnitaryToPermutationList(PartnerPairingAlgorithmUnitary(cls._numQubits,cls._excitedStateProbability))
         return CoolingCircuit(cls._numQubits,permutations)

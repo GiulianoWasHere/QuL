@@ -62,7 +62,7 @@ class CoolingCircuit:
         qreg_q = qk.QuantumRegister(numQubit, 'q')
         creg_c = qk.ClassicalRegister(numQubit, 'c')
         finalCircuit = QuantumCircuit(qreg_q, creg_c)
-        #finalCircuit.barrier()
+        finalCircuit.barrier()
         for i in range(len(l)):
             stateIn = integerToBinary(l[i][len(l[i])-2],numQubit)[::-1]
             stack = []
@@ -98,7 +98,7 @@ class CoolingCircuit:
                             stateIn = stateIn[:opposite] + '0' + stateIn[opposite + 1:]
 
 
-                        #circuit.barrier()
+                        circuit.barrier()
 
                         stack.append(circuit)
                         finalCircuit.compose(circuit,inplace=True)
