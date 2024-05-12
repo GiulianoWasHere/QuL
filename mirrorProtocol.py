@@ -4,8 +4,9 @@ import numpy as np
 from coolingUnitary import CoolingUnitary
 from occupationProbabilitiesList import OccupationProbabilitiesList
 from utils import *
+from coolingCircuit import CoolingCircuit
 
-class MirrorProtocol:
+class MirrorProtocolUnitary:
     """
     ## MirrorProtocol(numQubits,excitedStateProbability)
     Class for the Mirror Protocol.
@@ -14,9 +15,11 @@ class MirrorProtocol:
         numQubits (int): Number of qubits.
         excitedStateProbability (float): Probability of the excited state.
     Return:
-        Cooling Unitary (numpy.ndarray)
+        Cooling Unitary (scipy.sparse.csr_array)
+    Notes:
+        Using the function .toarray() is possible to get a numpy.ndarray.
     """
-    _numQubits = 2
+    _numQubits = 3
     _excitedStateProbability = 0.1
     _probabilitiesList = []
     _swapList = []
@@ -41,3 +44,25 @@ class MirrorProtocol:
             if(k > countZeros(li[i][index])):
                 swapList.append([li[i][index],invertState(li[i][index])])
         return swapList
+    
+class MirrorProtocolCircuit:
+    """
+    ## MirrorProtocolCircuit(numQubits,excitedStateProbability)
+
+    Create a circuit using the Mirror Protocol.
+
+    Parameters:
+        numQubits (int): Number of qubits.
+        (Optional) excitedStateProbability (float): Probability of the excited state.
+    Return:
+        coolingCircuit (QuantumCircuit)
+    """
+    _numQubits = 3
+    _excitedStateProbability = 0.1
+    
+    def __new__(cls,numQubits=_numQubits,excitedStateProbability=_excitedStateProbability):
+
+        cls._numQubits = numQubits
+        cls._excitedStateProbability = excitedStateProbability
+        permutations = CoolingCircuit.compressedCoolingUnitaryToPermutationList(MirrorProtocolUnitary(cls._numQubits,cls._excitedStateProbability))
+        return CoolingCircuit(cls._numQubits,permutations)

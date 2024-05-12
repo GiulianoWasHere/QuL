@@ -4,7 +4,7 @@ from qiskit import QuantumCircuit
 
 from qiskit_aer import AerSimulator
 
-def testCircuit2(circuit):
+""" def testCircuit2(circuit):
     n = circuit.num_qubits
     num_circs = 2**n
     circuits = []
@@ -51,7 +51,7 @@ def testCircuit2(circuit):
             print(format(i).zfill(numOfDigits) + " | " + format(i,'b').zfill(n) + " --> " + str(list(counts[i])[0]))
         else:
             print(format(i).zfill(numOfDigits) + " | " + format(i,'b').zfill(n) + " --> " + str(list(counts[i])[0]) + " (*)")
-
+ """
 
 def testCircuit(circuit):
 

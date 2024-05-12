@@ -8,9 +8,11 @@ from scipy.sparse import coo_array
 
 from coolingUnitary import CoolingUnitary
 from occupationProbabilitiesList import OccupationProbabilitiesList
-from mirrorProtocol import MirrorProtocol
-from pairingPartnerAlgorithm import PairingPartnerAlgorithm
-from minimalWorkProtocol import MinimalWorkProtocol
+from mirrorProtocol import MirrorProtocolUnitary
+from pairingPartnerAlgorithm import PairingPartnerAlgorithmUnitary
+from pairingPartnerAlgorithm import PartnerPairingAlgorithmCircuit
+from minimalWorkProtocol import MinimalWorkProtocolUnitary
+from minimalWorkProtocol import MinimalWorkProtocolCircuit
 from coolingCircuit import CoolingCircuit
 from utils import *
 from quantumUtils import *
@@ -92,16 +94,36 @@ matrix2 = csr_array((3, 3), dtype=np.int8)
 #matrix = matrix.dot(matrix2)
 
 #print(matrix.toarray()) """
-n = 4
+n = 12
 
-#start_time = time.time()
+start_time = time.time()
 
-m = PairingPartnerAlgorithm(n)
+c = PartnerPairingAlgorithmCircuit(n)
+#m = MinimalWorkProtocolUnitary(n)
+#p = CoolingCircuit.coolingUnitaryToPermutationList(m.toarray())
+#CoolingCircuit(n,p)
+#c = CoolingCircuit(n,m.toarray())
 #print()
-#print(time.time() - start_time)
+print(time.time() - start_time)
 
-a = CoolingCircuit.compressedCoolingUnitaryToPermutationList(m)
+c.draw(filename="circuit.txt")
 
+testCircuit(c)
+#checkUnitary2(m.toarray(),0.1)
+""" a = CoolingCircuit.compressedCoolingUnitaryToPermutationList(m)
+
+print(time.time() - start_time) """
+""" a = CoolingCircuit.compressedCoolingUnitaryToPermutationList(m)
+b = CoolingCircuit.coolingUnitaryToPermutationList(m.toarray())
+
+print(a)
+print(b)
+
+c = CoolingUnitary(n,a)
+checkUnitary2(c.toarray(),0.1)
+print(time.time() - start_time) """
+
+#checkUnitary2(m.toarray(),0.1)
 #print(m.indices[1])
 
 

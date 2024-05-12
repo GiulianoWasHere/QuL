@@ -5,17 +5,20 @@ from coolingUnitary import CoolingUnitary
 from occupationProbabilitiesList import OccupationProbabilitiesList
 from utils import *
 import bisect 
+from coolingCircuit import CoolingCircuit
 
-class PairingPartnerAlgorithm:
+class PairingPartnerAlgorithmUnitary:
     """
     ## PairingPartnerAlgorithm(numQubits,excitedStateProbability)
     Class for the Pairing Partner Algorithm.
 
     Parameters:
         numQubits (int): Number of qubits.
-        excitedStateProbability (float): Probability of the excited state.
+        (Optional) excitedStateProbability (float): Probability of the excited state.
     Return:
-        Cooling Unitary (numpy.ndarray)
+        Cooling Unitary (scipy.sparse.csr_array)
+    Notes:
+        Using the function .toarray() is possible to get a numpy.ndarray.
     """
     _numQubits = 2
     _excitedStateProbability = 0.1
@@ -125,3 +128,25 @@ class PairingPartnerAlgorithm:
                 i +=1
                 
         return swapListWithStates
+    
+class PartnerPairingAlgorithmCircuit:
+    """
+    ## PartnerPairingAlgorithmCircuit(numQubits,excitedStateProbability)
+
+    Create a circuit using the Partner Pairing Algorithm.
+
+    Parameters:
+        numQubits (int): Number of qubits.
+        (Optional) excitedStateProbability (float): Probability of the excited state.
+    Return:
+        coolingCircuit (QuantumCircuit)
+    """
+    _numQubits = 3
+    _excitedStateProbability = 0.1
+    
+    def __new__(cls,numQubits=_numQubits,excitedStateProbability=_excitedStateProbability):
+
+        cls._numQubits = numQubits
+        cls._excitedStateProbability = excitedStateProbability
+        permutations = CoolingCircuit.compressedCoolingUnitaryToPermutationList(PairingPartnerAlgorithmUnitary(cls._numQubits,cls._excitedStateProbability))
+        return CoolingCircuit(cls._numQubits,permutations)

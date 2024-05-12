@@ -36,7 +36,7 @@ class CoolingCircuit:
             raise ValueError("Specify number of qubits.")
         if(cls._permutationList is None and cls._coolingUnitary is None):
             raise ValueError("Specify a Permutation List or a Cooling Matrix.")
-        if(cls._permutationList is list):
+        if(isinstance(cls._permutationList, list)):
             return cls.permutationListToCircuit(cls._permutationList,numQubits)
         
         if(type(cls._permutationList) is np.ndarray):
@@ -58,7 +58,7 @@ class CoolingCircuit:
             Cooling Circuit (QuantumCircuit)
         """
         CoolingUnitary._checkInputParameters(CoolingUnitary,numQubit,l)
-
+        #print(l)
         qreg_q = qk.QuantumRegister(numQubit, 'q')
         creg_c = qk.ClassicalRegister(numQubit, 'c')
         finalCircuit = QuantumCircuit(qreg_q, creg_c)
@@ -155,9 +155,9 @@ class CoolingCircuit:
 
         return permutationsList
     
-    def compressedCoolingUnitaryToPermutationList(m):
+    def compressedCoolingUnitaryToPermutationList(ma):
         """
-        Returns a Permutation list from a Cooling Unitary.
+        Returns a Permutation list from a Compressed Cooling Unitary.
 
         Parameters:
             CoolingUnitary (numpy.ndarray)
@@ -166,33 +166,24 @@ class CoolingCircuit:
         """
         
         statesInSwapCycle = set()
-        numberOfStates = len(m.indices)
+        m = ma.indices
+        numberOfStates = len(m)
         permutationsList = []
-        print(numberOfStates)
-        for i in range(numberOfStates):
-            index = i
-            #If the state is NOT swapped with itself
-            if(m[index][index] != 1):
+        for index in range(numberOfStates):
+
+            if(index != m[index]):
                 #Check if the state is NOT already inside of a swap cycle
                 if(index not in statesInSwapCycle):
-                    l = [index]
+                    l = [int(index)]
                     statesInSwapCycle.add(index)
-                    nextIndex = -1
-
-                    #Find this state is swapped to
-                    for j in range(len(m[i])):
-                        if(m[j][i] == 1):
-                            nextIndex = j
-                            break
+                    nextIndex = m[index]
+                    l1 = []
                     #Cycle until we return to the starting state
                     while(index != nextIndex):
-                        l.append(nextIndex)
+                        l1.append(int(nextIndex))
                         statesInSwapCycle.add(nextIndex)
-                        for j in range(len(m[nextIndex])):
-                            if(m[j][nextIndex] == 1):
-                                nextIndex = j
-                                break 
-                    permutationsList.append(l)
+                        nextIndex = m[nextIndex]
+                    permutationsList.append(l + l1[::-1])
 
         return permutationsList
 

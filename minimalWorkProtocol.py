@@ -4,19 +4,22 @@ import numpy as np
 from coolingUnitary import CoolingUnitary
 from occupationProbabilitiesList import OccupationProbabilitiesList
 from utils import *
+from coolingCircuit import CoolingCircuit
 
-class MinimalWorkProtocol:
+class MinimalWorkProtocolUnitary:
     """
     ## MinimalWorkProtocol(numQubits,excitedStateProbability)
     Class for the Minimal Work Protocol.
 
     Parameters:
         numQubits (int): Number of qubits.
-        excitedStateProbability (float): Probability of the excited state.
+        (Optional) excitedStateProbability (float): Probability of the excited state.
     Return:
-        Cooling Unitary (numpy.ndarray)
+        Cooling Unitary (scipy.sparse.csr_array)
+    Notes:
+        Using the function .toarray() is possible to get a numpy.ndarray.
     """
-    _numQubits = 2
+    _numQubits = 3
     _excitedStateProbability = 0.1
     _probabilitiesList = []
     _swapList = []
@@ -49,14 +52,6 @@ class MinimalWorkProtocol:
                 dictionary[li[i][index]].append([li[i][0],i]) 
         return dictionary
     
-    def _pop(self,li):
-        """
-        Private: Pop an element from the list.
-        """
-        element = li[len(li)-1]
-        del li[len(li)-1]
-        return element
-    
     #very long name self explanatory
     def _checkIfMaxProbabilityIsOnTopHalfList(self,dictionary,halfOfStates):
         """
@@ -76,7 +71,7 @@ class MinimalWorkProtocol:
         Private: Algorithm for the Minimal Work Protocol.
         """
         numberOfStates = 2 ** self._numQubits
-    	#Index of the probabilities 
+        #Index of the probabilities 
         index = 1
         halfOfStates = numberOfStates // 2
 
@@ -106,7 +101,7 @@ class MinimalWorkProtocol:
                     if(len(statesToBeSwapped) > 0):
                         if(vectDictionary[i-1][j][1] >= halfOfStates):
                             #We swap the element only if it is lower half of the list and the state we are swapping has less probability
-                            element = self._pop(self,statesToBeSwapped)
+                            element = statesToBeSwapped.pop()
                             swapList.append([element[0],vectDictionary[i-1][j][0]])
 
                             #Swap state in the list
@@ -117,3 +112,24 @@ class MinimalWorkProtocol:
                         break
         return swapList
     
+class MinimalWorkProtocolCircuit:
+    """
+    ## MinimalWorkProtocolCircuit(numQubits,excitedStateProbability)
+
+    Create a circuit using the Minimal Work Protocol.
+
+    Parameters:
+        numQubits (int): Number of qubits.
+        (Optional) excitedStateProbability (float): Probability of the excited state.
+    Return:
+        coolingCircuit (QuantumCircuit)
+    """
+    _numQubits = 3
+    _excitedStateProbability = 0.1
+    
+    def __new__(cls,numQubits=_numQubits,excitedStateProbability=_excitedStateProbability):
+
+        cls._numQubits = numQubits
+        cls._excitedStateProbability = excitedStateProbability
+        permutations = CoolingCircuit.compressedCoolingUnitaryToPermutationList(MinimalWorkProtocolUnitary(cls._numQubits,cls._excitedStateProbability))
+        return CoolingCircuit(cls._numQubits,permutations)
