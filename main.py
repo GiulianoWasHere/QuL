@@ -10,8 +10,8 @@ from coolingUnitary import CoolingUnitary
 from occupationProbabilitiesList import OccupationProbabilitiesList
 from mirrorProtocol import MirrorProtocolUnitary
 from mirrorProtocol import MirrorProtocolCircuit
-from pairingPartnerAlgorithm import PartnerPairingAlgorithmUnitary
-from pairingPartnerAlgorithm import PartnerPairingAlgorithmCircuit
+from partnerPairingAlgorithm import PartnerPairingAlgorithmUnitary
+from partnerPairingAlgorithm import PartnerPairingAlgorithmCircuit
 from minimalWorkProtocol import MinimalWorkProtocolUnitary
 from minimalWorkProtocol import MinimalWorkProtocolCircuit
 from coolingCircuit import CoolingCircuit
@@ -95,7 +95,7 @@ matrix2 = csr_array((3, 3), dtype=np.int8)
 #matrix = matrix.dot(matrix2)
 
 #print(matrix.toarray()) """
-n = 5
+n = 7
 
 start_time = time.time()
 
@@ -105,9 +105,11 @@ m = PartnerPairingAlgorithmUnitary(n)
 #CoolingCircuit(n,p)
 #c = CoolingCircuit(n,m.toarray())
 #print()
+l = CoolingCircuit.compressedCoolingUnitaryToPermutationList(m)
+c = CoolingUnitary(n,l)
 print(time.time() - start_time)
 
-checkUnitary2(m.toarray(),0.1)
+checkUnitary2(c.toarray(),0.1)
 
 """ c.draw(filename="circuit.txt")
 
