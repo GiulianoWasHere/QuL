@@ -140,6 +140,8 @@ class PartnerPairingAlgorithmCircuit:
         (Optional) excitedStateProbability (float): Probability of the excited state.
     Return:
         coolingCircuit (QuantumCircuit)
+    Notes:
+        The circuit cools the last qubit. 
     """
     _numQubits = 3
     _excitedStateProbability = 0.1

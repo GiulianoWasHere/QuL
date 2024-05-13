@@ -60,8 +60,8 @@ class CoolingCircuit:
         CoolingUnitary._checkInputParameters(CoolingUnitary,numQubit,l)
         #print(l)
         qreg_q = qk.QuantumRegister(numQubit, 'q')
-        creg_c = qk.ClassicalRegister(numQubit, 'c')
-        finalCircuit = QuantumCircuit(qreg_q, creg_c)
+        #creg_c = qk.ClassicalRegister(numQubit, 'c')
+        finalCircuit = QuantumCircuit(qreg_q)
         finalCircuit.barrier()
         for i in range(len(l)):
             stateIn = integerToBinary(l[i][len(l[i])-2],numQubit)[::-1]
