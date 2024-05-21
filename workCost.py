@@ -10,11 +10,11 @@ import math
 class WorkCost:
     """
     ## WorkCost(coolingUnitary,w)
-    Class to calculate the work cost.
+        Class to calculate the work cost.
 
     Parameters:
         coolingUnitary (scipy.sparse.csr_array,numpy.ndarray): Cooling unitary
-        (Optional) w (float): 
+        (Optional) w (float): Resonant frequency of qubit
     Return:
         Work Cost (float)
     """
@@ -36,10 +36,7 @@ class WorkCost:
         raise ValueError("No CoolingUnitary in input")
     
     def _calculate(self,l,w,numQubits):
-        #print(numQubits)
         eigenvalue = Planck * w/2
-        #print(eigenvalue)
-        #print(l)
         workcost = 0
         for i in range(len(l)):
             for j in range(len(l[i])):
@@ -50,14 +47,16 @@ class WorkCost:
                     stateIn = integerToBinary(l[i][j],numQubits)
                     stateOut = integerToBinary(l[i][0],numQubits)
 
-                stateInSum = (countZeros(stateIn) * -1) + (numQubits - countZeros(stateIn))
-                stateOutSum = (countZeros(stateOut) * -1) + (numQubits - countZeros(stateOut))
+                stateInSum = (numQubits - countZeros(stateIn)) - (countZeros(stateIn))
+                stateOutSum = (numQubits - countZeros(stateOut)) - (countZeros(stateOut)) 
 
+                #Not sure? This one:
                 if(stateIn[0] == "0"):
                     workcost += -eigenvalue * (stateOutSum - stateInSum)
                 else:
                     workcost += eigenvalue * (stateOutSum - stateInSum)
-        return workcost
 
-print(WorkCost(MinimalWorkProtocolUnitary(3)))
+                #Or this one?:
+                #workcost += eigenvalue * (stateOutSum - stateInSum)
+        return workcost
 
