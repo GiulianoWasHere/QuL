@@ -4,27 +4,27 @@ from qiskit import QuantumCircuit
 
 class SubOptimalCoolingCircuit:
     """
-    ## SubOptimalCoolingCircuit(circuit,numTimes)
+    ## SubOptimalCoolingCircuit(circuit,rounds)
 
     Class for the Sub Optimal Cooling circuit. 
 
     Parameters:
         circuit (QuantumCircuit): Cooling circuit.
-        numTimes (int): a
+        rounds (int): number of rounds of Sub Optimal Cooling
     Return:
         coolingCircuit (QuantumCircuit)
     Notes:
         The circuit cools the last qubit. 
     """
     _circuit = None
-    _numTimes = 1
-    def __new__(cls,circuit=_circuit,numTimes = _numTimes):
+    _rounds = 1
+    def __new__(cls,circuit=_circuit,rounds = _rounds):
 
         cls._circuit = circuit
-        cls._numTimes = numTimes
+        cls._rounds = rounds
 
         if(isinstance(cls._circuit,QuantumCircuit)):
-            return cls._buildCircuit(cls,cls._circuit,cls._numTimes)
+            return cls._buildCircuit(cls,cls._circuit,cls._rounds)
         else:
             raise ValueError("Input is not a circuit.")
     
