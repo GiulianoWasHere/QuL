@@ -5,11 +5,14 @@ import math
 #Utils
 
 def printOccupationProbabilitiesList(list):
+    finalProb = 0
     for i in range(len(list)):
         print(str(i), end=" | ")
         print(list[i])
         if(i == len(list)//2 - 1 ):
             print("-----------------")
+        finalProb += list[i][1]
+    print(finalProb)
 
 def printOccupationProbabilitiesList2(list,t,j):
     for i in range(len(list)):
@@ -20,6 +23,8 @@ def printOccupationProbabilitiesList2(list,t,j):
         if(i == j):
             print("*",end="")
         print()
+        finalProb += list[i][1]
+    print(finalProb)
 
 def subSetsOfSwaps(l):
         """
@@ -164,6 +169,65 @@ def checkUnitary2(m,excitedStateProbability):
         outputState = int(indices[0][0])
         numberOfZeros = countZeros(integerToBinary(outputState,numQubits))
         probability = (excitedStateProbability ** (numQubits - numberOfZeros)) * ((1 - excitedStateProbability)** numberOfZeros)
+
+        numOfDigits = len(str(numberOfStates))
+        if(outputState == i):
+            print(format(i).zfill(numOfDigits) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits) + " | " + str(probability))
+        else:
+            print(format(i).zfill(numOfDigits) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits) + " | " + str(probability) + " (*)")
+        if(i == (numberOfStates //2)-1):
+            print("-------------------------")
+        #print(state)
+        #print(matrix)
+
+        # Return to all zero matrix
+        state[i,0] = 0 
+
+
+def checkUnitary3(m,excitedStateProbability):
+    """
+    Check every state after the application of the unitary
+    """
+
+    # Check if the matrix is unitary
+    if(is_unitary(m) == False):
+        raise ValueError("Not an unitary Matrix")
+
+    numberOfStates = len(m)
+    numQubits = int(math.log2(numberOfStates))
+
+    if(isinstance(excitedStateProbability, list)):
+        if(len(excitedStateProbability) != numQubits):
+            raise ValueError("Number of elements inside of the list is different than number of Qubits.")
+    # 1 column with 2 ** NumQubits 
+    state = np.zeros((numberOfStates,1))
+    for i in range(numberOfStates):
+        # i = 0,  State 00 = [1 0 0 0] 
+        # i = 1,  State 01 = [0 1 0 0] 
+
+        #Application of the unitary
+        state[i,0] = 1 
+        matrix = m.dot(state) 
+        indices = np.where(matrix == 1)
+
+        #Probably not necessary
+        if len(indices[0]) > 1:
+            raise ValueError("Error")
+        
+        
+        outputState = int(indices[0][0])
+        numberOfZeros = countZeros(integerToBinary(outputState,numQubits))
+        if(isinstance(excitedStateProbability, list)):
+            numberInBinary = integerToBinary(outputState,numQubits)
+            probability = 1
+            for j in range(numQubits):
+                if(numberInBinary[j] == "1"):
+                    probability *= excitedStateProbability[j]
+                else:
+                    probability *= (1-excitedStateProbability[j])    
+            probability = round(probability,numQubits+3)
+        else:
+            probability = (excitedStateProbability ** (numQubits - numberOfZeros)) * ((1 - excitedStateProbability)** numberOfZeros)
 
         numOfDigits = len(str(numberOfStates))
         if(outputState == i):
