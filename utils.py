@@ -201,6 +201,8 @@ def checkUnitary3(m,excitedStateProbability):
             raise ValueError("Number of elements inside of the list is different than number of Qubits.")
     # 1 column with 2 ** NumQubits 
     state = np.zeros((numberOfStates,1))
+    lowestElement = 99
+    highestElement = 0
     for i in range(numberOfStates):
         # i = 0,  State 00 = [1 0 0 0] 
         # i = 1,  State 01 = [0 1 0 0] 
@@ -229,16 +231,23 @@ def checkUnitary3(m,excitedStateProbability):
         else:
             probability = (excitedStateProbability ** (numQubits - numberOfZeros)) * ((1 - excitedStateProbability)** numberOfZeros)
 
+        if(lowestElement > probability):
+            lowestElement = probability
+        if(highestElement < probability):
+            highestElement = probability
+            #print(highestElement)
         numOfDigits = len(str(numberOfStates))
         if(outputState == i):
             print(format(i).zfill(numOfDigits) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits) + " | " + str(probability))
         else:
             print(format(i).zfill(numOfDigits) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits) + " | " + str(probability) + " (*)")
         if(i == (numberOfStates //2)-1):
-            print("-------------------------")
+            print("Lowest Element TOP LIST: " + str(lowestElement))
+            highestElement = 0
         #print(state)
         #print(matrix)
 
         # Return to all zero matrix
-        state[i,0] = 0 
+        state[i,0] = 0
+    print("Highest Element BOT LIST: " + str(highestElement))
         

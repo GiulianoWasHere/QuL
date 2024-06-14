@@ -95,21 +95,32 @@ matrix2 = csr_array((3, 3), dtype=np.int8)
 #matrix = matrix.dot(matrix2)
 
 #print(matrix.toarray()) """
-n = 7
+n = 20
 
 start_time = time.time()
 
-m = PartnerPairingAlgorithmUnitary(n)
-#m = MinimalWorkProtocolUnitary(n)
+#m = PartnerPairingAlgorithmUnitary(n,0.1)
+m = MinimalWorkProtocolUnitary(n)
 #p = CoolingCircuit.coolingUnitaryToPermutationList(m.toarray())
 #CoolingCircuit(n,p)
 #c = CoolingCircuit(n,m.toarray())
 #print()
-l = CoolingCircuit.compressedCoolingUnitaryToPermutationList(m)
-c = CoolingUnitary(n,l)
+#l = CoolingCircuit.compressedCoolingUnitaryToPermutationList(m)
+#c = CoolingUnitary(n,l)
 print(time.time() - start_time)
 
-checkUnitary2(c.toarray(),0.1)
+#checkUnitary2(c.toarray(),0.1)
+
+
+""" num = 23
+exState = []
+for i in range(num):
+    exState.append(0.1)
+#exState = [0.1,0.2,0.3,0.1,0.2]
+exState = 0.1
+start_time = time.time()
+MinimalWorkProtocolUnitary(num,exState)
+#checkUnitary3(MinimalWorkProtocolUnitary(num,exState).toarray(),exState) """
 
 """ c.draw(filename="circuit.txt")
 

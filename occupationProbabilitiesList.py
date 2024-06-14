@@ -12,6 +12,7 @@ class OccupationProbabilitiesList:
 
     Parameters:
         numQubits (int): Number of qubits.
+        OPTIONAL:
         excitedStateProbability (float): Probability of the excited state.
         OR
         excitedStateProbability (list): List of probability of the excited state for each qubit.
@@ -19,7 +20,7 @@ class OccupationProbabilitiesList:
         occupationProbabilitiesList (List)
     """
     
-    _numQubits = 2
+    _numQubits = 3
     _excitedStateProbability = 0.1
     _List = []
 
@@ -48,7 +49,7 @@ class OccupationProbabilitiesList:
                 else:
                     probability *= (1-listProbability[j])
             #Put the element in the list
-            round(probability,numQubits+3)
+            
             _List.append([numberInBinary,round(probability,numQubits+3)])
         return _List
 

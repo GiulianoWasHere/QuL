@@ -13,7 +13,10 @@ class MirrorProtocolUnitary:
 
     Parameters:
         numQubits (int): Number of qubits.
+        OPTIONAL:
         excitedStateProbability (float): Probability of the excited state.
+        OR
+        excitedStateProbability (list): List of probability of the excited state for each qubit.
     Return:
         Cooling Unitary (scipy.sparse.csr_array)
     Notes:
@@ -53,7 +56,10 @@ class MirrorProtocolCircuit:
 
     Parameters:
         numQubits (int): Number of qubits.
-        (Optional) excitedStateProbability (float): Probability of the excited state.
+        OPTIONAL:
+        excitedStateProbability (float): Probability of the excited state.
+        OR
+        excitedStateProbability (list): List of probability of the excited state for each qubit.
     Return:
         coolingCircuit (QuantumCircuit)
     Notes:

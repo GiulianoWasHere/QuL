@@ -14,13 +14,16 @@ class PartnerPairingAlgorithmUnitary:
 
     Parameters:
         numQubits (int): Number of qubits.
-        (Optional) excitedStateProbability (float): Probability of the excited state.
+        OPTIONAL:
+        excitedStateProbability (float): Probability of the excited state.
+        OR
+        excitedStateProbability (list): List of probability of the excited state for each qubit.
     Return:
         Cooling Unitary (scipy.sparse.csr_array)
     Notes:
         Use the function .toarray() to get a numpy.ndarray.
     """
-    _numQubits = 2
+    _numQubits = 3
     _excitedStateProbability = 0.1
     _probabilitiesList = []
     _swapList = []
