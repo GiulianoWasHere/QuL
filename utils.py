@@ -1,6 +1,7 @@
 from collections import Counter
 import numpy as np
 import math 
+import scipy as sp
 
 #Utils
 
@@ -192,6 +193,79 @@ def checkUnitary3(m,excitedStateProbability):
     # Check if the matrix is unitary
     if(is_unitary(m) == False):
         raise ValueError("Not an unitary Matrix")
+
+    numberOfStates = len(m)
+    numQubits = int(math.log2(numberOfStates))
+
+    if(isinstance(excitedStateProbability, list)):
+        if(len(excitedStateProbability) != numQubits):
+            raise ValueError("Number of elements inside of the list is different than number of Qubits.")
+    # 1 column with 2 ** NumQubits 
+    state = np.zeros((numberOfStates,1))
+    lowestElement = 99
+    highestElement = 0
+    for i in range(numberOfStates):
+        # i = 0,  State 00 = [1 0 0 0] 
+        # i = 1,  State 01 = [0 1 0 0] 
+
+        #Application of the unitary
+        state[i,0] = 1 
+        matrix = m.dot(state) 
+        indices = np.where(matrix == 1)
+
+        #Probably not necessary
+        if len(indices[0]) > 1:
+            raise ValueError("Error")
+        
+        
+        outputState = int(indices[0][0])
+        numberOfZeros = countZeros(integerToBinary(outputState,numQubits))
+        if(isinstance(excitedStateProbability, list)):
+            numberInBinary = integerToBinary(outputState,numQubits)
+            probability = 1
+            for j in range(numQubits):
+                if(numberInBinary[j] == "1"):
+                    probability *= excitedStateProbability[j]
+                else:
+                    probability *= (1-excitedStateProbability[j])    
+            probability = round(probability,numQubits+3)
+        else:
+            probability = (excitedStateProbability ** (numQubits - numberOfZeros)) * ((1 - excitedStateProbability)** numberOfZeros)
+
+        if(lowestElement > probability):
+            lowestElement = probability
+        if(highestElement < probability):
+            highestElement = probability
+            #print(highestElement)
+        numOfDigits = len(str(numberOfStates))
+        if(outputState == i):
+            print(format(i).zfill(numOfDigits) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits) + " | " + str(probability))
+        else:
+            print(format(i).zfill(numOfDigits) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits) + " | " + str(probability) + " (*)")
+        if(i == (numberOfStates //2)-1):
+            print("Lowest Element TOP LIST: " + str(lowestElement))
+            highestElement = 0
+        #print(state)
+        #print(matrix)
+
+        # Return to all zero matrix
+        state[i,0] = 0
+    print("Highest Element BOT LIST: " + str(highestElement))
+
+
+def checkUnitary4(m,excitedStateProbability):
+    """
+    Check every state after the application of the unitary
+    """
+    # Check if the matrix is unitary
+    if(m is np.ndarray):
+        if(is_unitary(m) == False):
+            raise ValueError("Not an unitary Matrix")        
+    else:
+        x = m.conjugate().transpose().dot(m)
+        y = sp.sparse.eye(x.shape[1]).tocsr()
+        if(not(np.all(x.indices == y.indices) and np.all(x.indptr == y.indptr) and np.allclose(x.data, y.data))):
+            raise ValueError("Not an unitary Matrix")
 
     numberOfStates = len(m)
     numQubits = int(math.log2(numberOfStates))

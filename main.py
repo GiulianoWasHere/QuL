@@ -5,6 +5,7 @@ import time
 from scipy.sparse import bsr_array
 from scipy.sparse import csr_array
 from scipy.sparse import coo_array
+import scipy as sp
 
 from coolingUnitary import CoolingUnitary
 from occupationProbabilitiesList import OccupationProbabilitiesList
@@ -17,8 +18,11 @@ from minimalWorkProtocol import MinimalWorkProtocolCircuit
 from coolingCircuit import CoolingCircuit
 from utils import *
 from quantumUtils import *
+from testUnitary import TestUnitary
 
 from qiskit.circuit.library import UnitaryGate
+
+import sys
 #TEST
 testMatrix = np.eye((4))
 
@@ -95,19 +99,51 @@ matrix2 = csr_array((3, 3), dtype=np.int8)
 #matrix = matrix.dot(matrix2)
 
 #print(matrix.toarray()) """
-n = 20
+n = 15
 
 start_time = time.time()
 
 #m = PartnerPairingAlgorithmUnitary(n,0.1)
 m = MinimalWorkProtocolUnitary(n)
+
+""" x = m.conjugate().transpose().dot(m)
+y = sp.sparse.eye(x.shape[1]).tocsr()
+if( np.all(x.indices == y.indices) and np.all(x.indptr == y.indptr) and np.allclose(x.data, y.data)):
+    print(1)
+else:
+    print(0) """
+TestUnitary(m,0.1)
+""" m2 = m.copy()
+
+
+#print(sys.getsizeof(m))
+
+print(m.data.nbytes + m.indptr.nbytes + m.indices.nbytes)
+
 #p = CoolingCircuit.coolingUnitaryToPermutationList(m.toarray())
 #CoolingCircuit(n,p)
 #c = CoolingCircuit(n,m.toarray())
 #print()
 #l = CoolingCircuit.compressedCoolingUnitaryToPermutationList(m)
 #c = CoolingUnitary(n,l)
-print(time.time() - start_time)
+
+start_time = time.time()
+
+m.dot(m2)
+
+final = time.time()
+print(final - start_time)
+
+m = MirrorProtocolUnitary(n)
+m = m.toarray()
+m2 = m.copy()
+print(m.nbytes)
+start_time = time.time()
+
+m.dot(m2)
+
+print(time.time() - start_time) """
+
 
 #checkUnitary2(c.toarray(),0.1)
 
