@@ -33,11 +33,11 @@ class TestCircuit:
 
         qasm_sim = AerSimulator()
         numOfDigits = len(str(num_circs))
-        print(format(0).zfill(numOfDigits) + " | ",end="")
+        """ print(format(0).zfill(numOfDigits) + " | ",end="")
         for i in range(n-1,0,-1):
             print(i,end="")
         print(0)
-        print("---------------------")
+        print("---------------------") """
 
         #make circuits
         for i in range(num_circs):
@@ -67,4 +67,4 @@ class TestCircuit:
             else:
                 print(format(i).zfill(numOfDigits) + " | " + format(i,'b').zfill(n) + " --> " + str(list(counts)[0]) + " (*)")
             if(i == (num_circs //2)-1):
-                print("-------------------------")
+                print("--------------------------")

@@ -62,7 +62,7 @@ class CoolingCircuit:
     def is_numpy_array(matrix):
         return isinstance(matrix[0], np.ndarray)
 
-    def permutationListToCircuit(l,numQubit):
+    def permutationListToCircuitNO(l,numQubit):
         """
         Returns a circuit from a Permutation List.
 
@@ -134,7 +134,7 @@ class CoolingCircuit:
         return finalCircuit
     
     #XOR
-    def permutationListToCircuit(l,numQubit):
+    def permutationListToCircuitXOR(l,numQubit):
         """
         Returns a circuit from a Permutation List.
 
@@ -228,7 +228,7 @@ class CoolingCircuit:
         return finalCircuit
     
     #NEW NEW
-    def permutationListToCircuit(l,numQubit,barriers):
+    def permutationListToCircuit444(l,numQubit,barriers):
         """
         Returns a circuit from a Permutation List.
 
@@ -307,6 +307,256 @@ class CoolingCircuit:
                 stack.pop()
                 while(len(stack)):
                     finalCircuit.compose(stack.pop(),inplace=True)
+
+        return finalCircuit
+    
+    #NEW NEW TEST 2
+    def permutationListToCircuit33(l,numQubit,barriers):
+        """
+        Returns a circuit from a Permutation List.
+
+        Parameters:
+            Permutation List (list)
+        Return:
+            Cooling Circuit (QuantumCircuit)
+        """
+        CoolingUnitary._checkInputParameters(CoolingUnitary,numQubit,l)
+        #print(l)
+        qreg_q = qk.QuantumRegister(numQubit, 'q')
+        #creg_c = qk.ClassicalRegister(numQubit, 'c')
+        finalCircuit = QuantumCircuit(qreg_q)
+        if(barriers == True):
+            finalCircuit.barrier()
+
+        rangeMCX = list(range(1,numQubit))
+        mcxGates = []
+        mcxGates.append(QuantumCircuit(qreg_q))
+        mcxGates[0].mcx(rangeMCX,0)
+        for i in range(numQubit-1):
+            rangeMCX[i] = i
+            mcxGates.append(QuantumCircuit(qreg_q))
+            mcxGates[i+1].mcx(rangeMCX,i+1)
+
+        for i in range(len(l)):
+            stateIn = integerToBinary(l[i][len(l[i])-2],numQubit)[::-1]
+            stack = []
+            for t in range(len(l[i])-2,-1,-1):
+                #XOR to find where the state 1 differ from the state 2
+                #the resulting list will be used to create the circuit
+                XOR = l[i][t] ^ l[i][t-1]
+                count = 0
+                lenList = 0
+                li = []
+                while (XOR):
+                    if(XOR % 2):
+                        li.append(count)
+                        lenList +=1
+                    XOR = XOR >> 1
+                    count += 1 
+
+                for j in range(lenList):
+                    opposite = li[j]          
+                    circuit = QuantumCircuit(qreg_q)
+                    #Add X gates when the qubit is in the state 0 so all control are in the 1 state 
+                    xList = []
+                    for z in range(len(stateIn)):
+                        if(z != opposite):
+                            if(stateIn[z] == '0'):
+                                xList.append(z)
+                    if xList:
+                        circuit.x(xList) 
+
+                    circuit.compose(mcxGates[opposite],inplace=True)
+                    
+                    #Add X gates when the qubit is in the state 0 so all control are in the 1 state
+                    if xList:
+                        circuit.x(xList) 
+
+                    #Change the state in to match the state after applying the gate              
+                    if(stateIn[opposite] == '0'):
+                        stateIn = stateIn[:opposite] + '1' + stateIn[opposite + 1:]
+                    else:
+                        stateIn = stateIn[:opposite] + '0' + stateIn[opposite + 1:]
+
+                    if(barriers == True):
+                        circuit.barrier()
+
+                    if(j != lenList-1):
+                        stack.append(circuit)
+                    #stack.append(circuit)
+                    finalCircuit.compose(circuit,inplace=True)
+
+            #Using the stack we create the uncomputation circuit
+            #We discard the first element since we don't need it for the uncompuation
+            #stack.pop()
+            while(len(stack)):
+                finalCircuit.compose(stack.pop(),inplace=True)
+            #finalCircuit.compose(stack,inplace=True)
+
+        return finalCircuit
+    
+    #NEW NEW
+    def permutationListToCircuit(l,numQubit,barriers):
+        """
+        Returns a circuit from a Permutation List.
+
+        Parameters:
+            Permutation List (list)
+        Return:
+            Cooling Circuit (QuantumCircuit)
+        """
+        CoolingUnitary._checkInputParameters(CoolingUnitary,numQubit,l)
+        #print(l)
+        qreg_q = qk.QuantumRegister(numQubit, 'q')
+        #creg_c = qk.ClassicalRegister(numQubit, 'c')
+        finalCircuit = QuantumCircuit(qreg_q)
+        if(barriers == True):
+            finalCircuit.barrier()
+
+        rangeMCX = list(range(1,numQubit))
+        mcxGates = []
+        circtemp = QuantumCircuit(numQubit)
+        circtemp.mcx(rangeMCX,0)
+        mcxGates.append(circtemp.data.pop())
+        for i in range(numQubit-1):
+            rangeMCX[i] = i
+            circtemp.mcx(rangeMCX,i+1)
+            mcxGates.append(circtemp.data.pop())
+
+        for i in range(len(l)):
+            stateIn = integerToBinary(l[i][len(l[i])-2],numQubit)[::-1]
+            stack = []
+            for t in range(len(l[i])-2,-1,-1):
+                #XOR to find where the state 1 differ from the state 2
+                #the resulting list will be used to create the circuit
+                XOR = l[i][t] ^ l[i][t-1]
+                count = 0
+                lenList = 0
+                li = []
+                while (XOR):
+                    if(XOR % 2):
+                        li.append(count)
+                        lenList +=1
+                    XOR = XOR >> 1
+                    count += 1 
+
+                for j in range(lenList):
+                    opposite = li[j]          
+                    circuit = QuantumCircuit(qreg_q)
+                    #Add X gates when the qubit is in the state 0 so all control are in the 1 state 
+                    xList = []
+                    for z in range(len(stateIn)):
+                        if(z != opposite):
+                            if(stateIn[z] == '0'):
+                                xList.append(z)
+                    if xList:
+                        circuit.x(xList)
+                                    
+                    #circuit.compose(mcxGates[opposite],inplace=True)
+                    circuit.data.append(mcxGates[opposite])
+                    #Add X gates when the qubit is in the state 0 so all control are in the 1 state
+                    if xList:
+                        circuit.x(xList) 
+
+                    #Change the state in to match the state after applying the gate              
+                    if(stateIn[opposite] == '0'):
+                        stateIn = stateIn[:opposite] + '1' + stateIn[opposite + 1:]
+                    else:
+                        stateIn = stateIn[:opposite] + '0' + stateIn[opposite + 1:]
+
+                    if(barriers == True):
+                        circuit.barrier()
+
+                    if(j != lenList-1):
+                        stack.append(circuit)
+                    #stack.append(circuit)
+                    finalCircuit.compose(circuit,inplace=True)
+
+            #Using the stack we create the uncomputation circuit
+            #We discard the first element since we don't need it for the uncompuation
+            #stack.pop()
+            while(len(stack)):
+                finalCircuit.compose(stack.pop(),inplace=True)
+            #finalCircuit.compose(stack,inplace=True)
+
+        return finalCircuit
+    
+    #NEW NEW NEW NEW NEW NEW
+    def permutationListToCircuit(l,numQubit,barriers):
+        """
+        Returns a circuit from a Permutation List.
+
+        Parameters:
+            Permutation List (list)
+        Return:
+            Cooling Circuit (QuantumCircuit)
+        """
+        CoolingUnitary._checkInputParameters(CoolingUnitary,numQubit,l)
+        #print(l)
+        qreg_q = qk.QuantumRegister(numQubit, 'q')
+        #creg_c = qk.ClassicalRegister(numQubit, 'c')
+        finalCircuit = QuantumCircuit(qreg_q)
+        if(barriers == True):
+            finalCircuit.barrier()
+
+        rangeMCX = list(range(1,numQubit))
+        mcxGates = []
+        circtemp = QuantumCircuit(numQubit)
+        circtemp.mcx(rangeMCX,0)
+        mcxGates.append(circtemp.data.pop())
+        for i in range(numQubit-1):
+            rangeMCX[i] = i
+            circtemp.mcx(rangeMCX,i+1)
+            mcxGates.append(circtemp.data.pop())
+
+        for i in range(len(l)):
+            stateIn = integerToBinary(l[i][len(l[i])-2],numQubit)[::-1]
+            stack = []
+            for t in range(len(l[i])-2,-1,-1):
+                #XOR to find where the state 1 differ from the state 2
+                #the resulting list will be used to create the circuit
+                XOR = l[i][t] ^ l[i][t-1]
+                count = 0
+                lenList = 0
+                li = []
+                while (XOR):
+                    if(XOR % 2):
+                        li.append(count)
+                        lenList +=1
+                    XOR = XOR >> 1
+                    count += 1 
+                circuits = []
+                for j in range(lenList):
+                    opposite = li[j]          
+                    circuits.append(QuantumCircuit(qreg_q))
+                    #Add X gates when the qubit is in the state 0 so all control are in the 1 state 
+                    xList = []
+                    for z in range(len(stateIn)):
+                        if(z != opposite):
+                            if(stateIn[z] == '0'):
+                                xList.append(z)
+                    if xList:
+                        circuits[j].x(xList)
+                                    
+                    circuits[j].data.append(mcxGates[opposite])
+                    #Add X gates when the qubit is in the state 0 so all control are in the 1 state
+                    if xList:
+                        circuits[j].x(xList) 
+
+                    #Change the state in to match the state after applying the gate              
+                    if(stateIn[opposite] == '0'):
+                        stateIn = stateIn[:opposite] + '1' + stateIn[opposite + 1:]
+                    else:
+                        stateIn = stateIn[:opposite] + '0' + stateIn[opposite + 1:]
+
+                    if(barriers == True):
+                        circuits[j].barrier()
+
+                    finalCircuit.compose(circuits[j],inplace=True)
+
+                #using the circuits to do the uncomputation
+                for p in range(lenList-2,-1,-1):
+                    finalCircuit.compose(circuits[p],inplace=True)
 
         return finalCircuit
     

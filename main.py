@@ -110,9 +110,11 @@ m = PartnerPairingAlgorithmUnitary(n)
 print("PPA:")
 print(time.time() - start_time)
 
+perm = CoolingCircuit.compressedCoolingUnitaryToPermutationList(m)
+
 start_time = time.time()
 
-CoolingCircuit(n,m,False)
+CoolingCircuit(n,perm,barriers = False)
 
 print(time.time() - start_time)
 
@@ -122,9 +124,11 @@ m = MirrorProtocolUnitary(n)
 print("Mirror:")
 print(time.time() - start_time)
 
+perm = CoolingCircuit.compressedCoolingUnitaryToPermutationList(m)
+
 start_time = time.time()
 
-CoolingCircuit(n,m,False)
+CoolingCircuit(n,perm,barriers = False)
 
 print(time.time() - start_time)
 
@@ -134,9 +138,11 @@ m = MinimalWorkProtocolUnitary(n)
 print("Minimal:")
 print(time.time() - start_time)
 
+perm = CoolingCircuit.compressedCoolingUnitaryToPermutationList(m)
+
 start_time = time.time()
 
-CoolingCircuit(n,m,False)
+CoolingCircuit(n,perm,barriers = False)
 
 print(time.time() - start_time)
 

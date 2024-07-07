@@ -226,6 +226,6 @@ class MinimalWorkProtocolCircuit:
         cls._numQubits = numQubits
         cls._excitedStateProbability = excitedStateProbability
         cls._barriers = barriers
-        print(barriers)
+        #print(barriers)
         permutations = CoolingCircuit.compressedCoolingUnitaryToPermutationList(MinimalWorkProtocolUnitary(cls._numQubits,cls._excitedStateProbability))
         return CoolingCircuit(cls._numQubits,permutations,barriers=cls._barriers)
