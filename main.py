@@ -17,14 +17,14 @@ from minimalWorkProtocol import MinimalWorkProtocolUnitary
 from minimalWorkProtocol import MinimalWorkProtocolCircuit
 from coolingCircuit import CoolingCircuit
 from utils import *
-from quantumUtils import *
 from testUnitary import TestUnitary
+from testCircuit import TestCircuit
 
 from qiskit.circuit.library import UnitaryGate
 
 import sys
 #TEST
-testMatrix = np.eye((4))
+""" testMatrix = np.eye((4))
 
 
 matrix_4x4 = np.array([[1, 0, 0, 0],   
@@ -35,7 +35,7 @@ matrix_4x4 = np.array([[1, 0, 0, 0],
 matrix_4x4 = np.array([[0, 0, 1, 0],   
                        [0, 1, 0, 0],   
                        [1, 0, 0, 0],   
-                       [0, 0, 0, 1]])
+                       [0, 0, 0, 1]]) """
 
 
 #obj = CoolingUnitary(numQubits=3,swapList=lista)
@@ -99,12 +99,46 @@ matrix2 = csr_array((3, 3), dtype=np.int8)
 #matrix = matrix.dot(matrix2)
 
 #print(matrix.toarray()) """
-n = 15
+n = 16
+
+print(n)
+
+#PPA
+start_time = time.time()
+
+m = PartnerPairingAlgorithmUnitary(n)
+print("PPA:")
+print(time.time() - start_time)
 
 start_time = time.time()
 
-#m = PartnerPairingAlgorithmUnitary(n,0.1)
+CoolingCircuit(n,m,False)
+
+print(time.time() - start_time)
+
+start_time = time.time()
+
+m = MirrorProtocolUnitary(n)
+print("Mirror:")
+print(time.time() - start_time)
+
+start_time = time.time()
+
+CoolingCircuit(n,m,False)
+
+print(time.time() - start_time)
+
+start_time = time.time()
+
 m = MinimalWorkProtocolUnitary(n)
+print("Minimal:")
+print(time.time() - start_time)
+
+start_time = time.time()
+
+CoolingCircuit(n,m,False)
+
+print(time.time() - start_time)
 
 """ x = m.conjugate().transpose().dot(m)
 y = sp.sparse.eye(x.shape[1]).tocsr()
@@ -112,7 +146,6 @@ if( np.all(x.indices == y.indices) and np.all(x.indptr == y.indptr) and np.allcl
     print(1)
 else:
     print(0) """
-TestUnitary(m,0.1)
 """ m2 = m.copy()
 
 

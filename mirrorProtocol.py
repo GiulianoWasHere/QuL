@@ -50,13 +50,15 @@ class MirrorProtocolUnitary:
     
 class MirrorProtocolCircuit:
     """
-    ## MirrorProtocolCircuit(numQubits,excitedStateProbability)
+    ## MirrorProtocolCircuit(numQubits,barriers,excitedStateProbability)
 
     Create a circuit using the Mirror Protocol.
 
     Parameters:
         numQubits (int): Number of qubits.
         OPTIONAL:
+        barriers (bool): Barriers in the circuit.
+
         excitedStateProbability (float): Probability of the excited state.
         OR
         excitedStateProbability (list): List of probability of the excited state for each qubit.
@@ -67,10 +69,11 @@ class MirrorProtocolCircuit:
     """
     _numQubits = 3
     _excitedStateProbability = 0.1
-    
-    def __new__(cls,numQubits=_numQubits,excitedStateProbability=_excitedStateProbability):
+    _barriers = False
+    def __new__(cls,numQubits=_numQubits,barriers = _barriers,excitedStateProbability=_excitedStateProbability):
 
         cls._numQubits = numQubits
         cls._excitedStateProbability = excitedStateProbability
+        cls._barriers = barriers
         permutations = CoolingCircuit.compressedCoolingUnitaryToPermutationList(MirrorProtocolUnitary(cls._numQubits,cls._excitedStateProbability))
-        return CoolingCircuit(cls._numQubits,permutations)
+        return CoolingCircuit(cls._numQubits,permutations,barriers=cls._barriers)

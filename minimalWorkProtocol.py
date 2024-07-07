@@ -200,16 +200,19 @@ class MinimalWorkProtocolUnitary:
     
 class MinimalWorkProtocolCircuit:
     """
-    ## MinimalWorkProtocolCircuit(numQubits,excitedStateProbability)
+    ## MinimalWorkProtocolCircuit(numQubits,barriers,excitedStateProbability)
 
     Create a circuit using the Minimal Work Protocol.
 
     Parameters:
         numQubits (int): Number of qubits.
         OPTIONAL:
+        barriers (bool): Barriers in the circuit.
+
         excitedStateProbability (float): Probability of the excited state.
         OR
         excitedStateProbability (list): List of probability of the excited state for each qubit.
+        
     Return:
         coolingCircuit (QuantumCircuit)
     Notes:
@@ -217,10 +220,12 @@ class MinimalWorkProtocolCircuit:
     """
     _numQubits = 3
     _excitedStateProbability = 0.1
-    
-    def __new__(cls,numQubits=_numQubits,excitedStateProbability=_excitedStateProbability):
+    _barriers = False
+    def __new__(cls,numQubits=_numQubits,barriers = _barriers,excitedStateProbability=_excitedStateProbability):
 
         cls._numQubits = numQubits
         cls._excitedStateProbability = excitedStateProbability
+        cls._barriers = barriers
+        print(barriers)
         permutations = CoolingCircuit.compressedCoolingUnitaryToPermutationList(MinimalWorkProtocolUnitary(cls._numQubits,cls._excitedStateProbability))
-        return CoolingCircuit(cls._numQubits,permutations)
+        return CoolingCircuit(cls._numQubits,permutations,barriers=cls._barriers)

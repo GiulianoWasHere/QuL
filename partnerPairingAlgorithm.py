@@ -218,13 +218,18 @@ class PartnerPairingAlgorithmUnitary:
     
 class PartnerPairingAlgorithmCircuit:
     """
-    ## PartnerPairingAlgorithmCircuit(numQubits,excitedStateProbability)
+    ## PartnerPairingAlgorithmCircuit(numQubits,barriers,excitedStateProbability)
 
     Create a circuit using the Partner Pairing Algorithm.
 
     Parameters:
         numQubits (int): Number of qubits.
-        (Optional) excitedStateProbability (float): Probability of the excited state.
+        OPTIONAL:
+        barriers (bool): Barriers in the circuit.
+
+        excitedStateProbability (float): Probability of the excited state.
+        OR
+        excitedStateProbability (list): List of probability of the excited state for each qubit.
     Return:
         coolingCircuit (QuantumCircuit)
     Notes:
@@ -232,10 +237,11 @@ class PartnerPairingAlgorithmCircuit:
     """
     _numQubits = 3
     _excitedStateProbability = 0.1
-    
-    def __new__(cls,numQubits=_numQubits,excitedStateProbability=_excitedStateProbability):
+    _barriers = False
+    def __new__(cls,numQubits=_numQubits,barriers = _barriers,excitedStateProbability=_excitedStateProbability):
 
         cls._numQubits = numQubits
         cls._excitedStateProbability = excitedStateProbability
+        cls._barriers = barriers
         permutations = CoolingCircuit.compressedCoolingUnitaryToPermutationList(PartnerPairingAlgorithmUnitary(cls._numQubits,cls._excitedStateProbability))
-        return CoolingCircuit(cls._numQubits,permutations)
+        return CoolingCircuit(cls._numQubits,permutations,barriers=barriers)
