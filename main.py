@@ -99,7 +99,7 @@ matrix2 = csr_array((3, 3), dtype=np.int8)
 #matrix = matrix.dot(matrix2)
 
 #print(matrix.toarray()) """
-n = 16
+n = 18
 
 print(n)
 
