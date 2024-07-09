@@ -99,7 +99,7 @@ matrix2 = csr_array((3, 3), dtype=np.int8)
 #matrix = matrix.dot(matrix2)
 
 #print(matrix.toarray()) """
-n = 18
+n = 14
 
 print(n)
 
@@ -115,6 +115,7 @@ perm = CoolingCircuit.compressedCoolingUnitaryToPermutationList(m)
 start_time = time.time()
 
 CoolingCircuit(n,perm,barriers = False)
+#CoolingCircuit(n,perm)
 
 print(time.time() - start_time)
 
