@@ -1,7 +1,9 @@
 from collections import Counter
 import numpy as np
 import math 
+import coolingUnitary as cu
 import scipy as sp
+from scipy.sparse import csr_array
 
 #Utils
 
@@ -97,21 +99,59 @@ def is_unitary(m):
     """
     return np.allclose(np.eye(m.shape[0]), m.conj(m).T.dot(m))
 
+def generateInitialVector(numQubits, excitedStateProbability):
+    usingList = False
+    if(isinstance(excitedStateProbability, list)):
+        usingList = True
+        if(len(excitedStateProbability) != numQubits):
+            raise ValueError("Number of elements inside of the list is different than number of Qubits.")
+        
+    numStates = 2 ** numQubits
+    data = []
+    col = numStates * [0]
+    row = []
+    for i in range(numStates):
+        row.append(i)
+        numberInBinary = integerToBinary(i,numQubits)
+        if(usingList):
+            probability = 1
+            for j in range(numQubits):
+                if(numberInBinary[j] == "1"):
+                    probability *= excitedStateProbability[j]
+                else:
+                    probability *= (1-excitedStateProbability[j])    
+            probability = round(probability,numQubits+3)
+        else:
+            numberOfZeros = countZeros(numberInBinary)
+            probability = (excitedStateProbability ** (numQubits - numberOfZeros)) * ((1 - excitedStateProbability)** numberOfZeros)
+        data.append(probability)
+        
+    return csr_array((data, (col, row)), shape=(1, numStates))
 
-def solve(A, B,n):
-    XOR = A ^ B
-    count = 0
-    # Check for 1's in the binary form using
-    # Brian Kernighan's Algorithm
-    print(integerToBinary(A,n))
-    print(integerToBinary(B,n))
-    print(integerToBinary(XOR,n))
-    print(XOR >> 1)
-    li = []
-    while (XOR):
-        if(XOR % 2):
-            li.append(count)
-        XOR = XOR >> 1
-        count += 1
-    print(li)
-    return count
+def checkInputMatrix(m):
+        """
+            Check if a Matrix is Unitary.
+        Parameters:
+            m (numpy.ndarray or sparse._csr.csr_array): Matrix.
+        Return:
+            Number Of Qubits (int)
+        """
+        # Check if the matrix is unitary
+        if(type(m) is np.ndarray):   
+            if(is_unitary(m) == False):
+                raise ValueError("Not an unitary Matrix")
+            numberOfStates = len(m) 
+            return int(math.log2(numberOfStates)),m
+
+        if(type(m) is sp.sparse._csr.csr_array):
+            x = m.conjugate().transpose().dot(m)
+            y = sp.sparse.eye(x.shape[1]).tocsr()
+            if(not(np.all(x.indices == y.indices) and np.all(x.indptr == y.indptr) and np.allclose(x.data, y.data))):
+                raise ValueError("Not an unitary Matrix")
+            numberOfStates = m.shape[0]
+            return int(math.log2(numberOfStates)),m
+        
+        if(type(m) is cu.CoolingUnitary):
+            return m._numQubits,m.coolingUnitary
+
+        raise ValueError("Matrix not a np.ndarray, a csr.array or a Cooling Unitary")

@@ -6,31 +6,23 @@ from occupationProbabilitiesList import OccupationProbabilitiesList
 from utils import *
 from coolingCircuit import CoolingCircuit
 
-class MirrorProtocolUnitary:
+class MirrorProtocol:
     """
-    ## MirrorProtocol(numQubits,excitedStateProbability)
+    ## MirrorProtocol(numQubits)
     Class for the Mirror Protocol.
 
     Parameters:
         numQubits (int): Number of qubits.
-        OPTIONAL:
-        excitedStateProbability (float): Probability of the excited state.
-        OR
-        excitedStateProbability (list): List of probability of the excited state for each qubit.
     Return:
-        Cooling Unitary (scipy.sparse.csr_array)
-    Notes:
-        Use the function .toarray() to get a numpy.ndarray.
+        Cooling Unitary (CoolingUnitary)
     """
     _numQubits = 3
-    _excitedStateProbability = 0.1
     _probabilitiesList = []
     _swapList = []
 
-    def __new__(cls,numQubits=_numQubits,excitedStateProbability=_excitedStateProbability):
+    def __new__(cls,numQubits=_numQubits):
         cls._numQubits = numQubits
-        cls._excitedStateProbability = excitedStateProbability
-        cls._probabilitiesList = OccupationProbabilitiesList(cls._numQubits,cls._excitedStateProbability)
+        cls._probabilitiesList = OccupationProbabilitiesList(cls._numQubits)
         _swapList = cls._algorithm(cls,cls._probabilitiesList)
         return CoolingUnitary(cls._numQubits,_swapList)
     
@@ -47,33 +39,3 @@ class MirrorProtocolUnitary:
             if(k > countZeros(li[i][index])):
                 swapList.append([li[i][index],invertState(li[i][index])])
         return swapList
-    
-class MirrorProtocolCircuit:
-    """
-    ## MirrorProtocolCircuit(numQubits,barriers,excitedStateProbability)
-
-    Create a circuit using the Mirror Protocol.
-
-    Parameters:
-        numQubits (int): Number of qubits.
-        OPTIONAL:
-        barriers (bool): Barriers in the circuit.
-
-        excitedStateProbability (float): Probability of the excited state.
-        OR
-        excitedStateProbability (list): List of probability of the excited state for each qubit.
-    Return:
-        coolingCircuit (QuantumCircuit)
-    Notes:
-        The circuit cools the last qubit. 
-    """
-    _numQubits = 3
-    _excitedStateProbability = 0.1
-    _barriers = False
-    def __new__(cls,numQubits=_numQubits,barriers = _barriers,excitedStateProbability=_excitedStateProbability):
-
-        cls._numQubits = numQubits
-        cls._excitedStateProbability = excitedStateProbability
-        cls._barriers = barriers
-        permutations = CoolingCircuit.compressedCoolingUnitaryToPermutationList(MirrorProtocolUnitary(cls._numQubits,cls._excitedStateProbability))
-        return CoolingCircuit(cls._numQubits,permutations,barriers=cls._barriers)

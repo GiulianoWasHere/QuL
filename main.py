@@ -17,7 +17,7 @@ from minimalWorkProtocol import MinimalWorkProtocolUnitary
 from minimalWorkProtocol import MinimalWorkProtocolCircuit
 from coolingCircuit import CoolingCircuit
 from utils import *
-from testUnitary import TestUnitary
+from OLDCODE.testUnitary import TestUnitary
 from testCircuit import TestCircuit
 
 from qiskit.circuit.library import UnitaryGate

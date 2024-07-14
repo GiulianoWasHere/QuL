@@ -1,7 +1,12 @@
 from collections import Counter
+from scipy.constants import Planck
 import numpy as np
+import scipy as sp
 from scipy.sparse import csr_array
 from utils import *
+
+import qiskit as qk
+from qiskit import QuantumCircuit
 
 class CoolingUnitary:
     """
@@ -11,9 +16,11 @@ class CoolingUnitary:
     Parameters:
         numQubits (int): Number of qubits.
         swapList (list): List to describe the states to be swapped.
-    Return:
-        coolingUnitary (numpy.ndarray)
-
+    
+    Notes:
+        Use the function .getCoolingUnitary() to get a scipy.sparse.csr_array,
+        the resulting matrix can be transformed in a numpy.ndarray with
+        the function .toarray().
     EXAMPLES:
 
     - Single Swap: `[["000","001"]] 000 <---> 001`
@@ -27,14 +34,168 @@ class CoolingUnitary:
     _numQubits = 3
     coolingUnitary = None
 
-    def __new__(cls,numQubits=_numQubits,swapList=_swapList):
-        cls._checkInputParameters(cls,numQubits,swapList)
-        cls._numQubits = numQubits
-        cls._swapList = swapList
-        cls._swapList = listIntegerToBinary(cls._swapList,numQubits)
-        cls._makeMatrix(cls)
-        return cls.coolingUnitary
+    def __init__(self,numQubits=_numQubits,swapList=_swapList):
+        self._checkInputParameters(numQubits,swapList)
+        self._numQubits = numQubits
+        self._swapList = swapList
+        self._swapList = listIntegerToBinary(self._swapList,numQubits)
+        self._makeMatrix()
     
+    def getCoolingUnitary(self):
+        """
+        Returns the Cooling Unitary.
+        """
+        return self.coolingUnitary
+    
+    def calculateWorkCost(self,w,excitedState):
+        """
+        ## calculateWorkCost(excitedState,w)
+            Calculate the work cost of the Unitary.
+
+        Parameters:
+            excitedStateProbability (float): Probability of the excited state.
+            (Optional) w (float): Resonant frequency of qubit
+        Return:
+            Work Cost (float)
+        """       
+        m = self.coolingUnitary
+        if(type(m) is np.ndarray):
+            l = self._coolingUnitaryToPermutationList(m)
+            numberOfStates = len(m) 
+            numQubits = int(math.log2(numberOfStates))
+        elif(type(m) is sp.sparse._csr.csr_array):
+            l = self._compressedCoolingUnitaryToPermutationList(m)
+            numberOfStates = m.shape[0]
+            numQubits = int(math.log2(numberOfStates))
+        else:
+            ValueError("Matrix is not a np.ndarray or a csr array")
+        workcost = 0
+        for i in range(len(l)):
+            for j in range(len(l[i])):
+                if(j != len(l[i])-1):
+                    stateIn = integerToBinary(l[i][j],numQubits)
+                    stateOut = integerToBinary(l[i][j+1],numQubits)
+                else:
+                    stateIn = integerToBinary(l[i][j],numQubits)
+                    stateOut = integerToBinary(l[i][0],numQubits)
+
+                stateInProb = countZeros(stateIn) * (1 - excitedState) + (numQubits - countZeros(stateIn) * excitedState)
+                stateOutProb = countZeros(stateOut) * (1 - excitedState) + (numQubits - countZeros(stateOut) * excitedState)
+
+                eigenvalue = Planck * w/2 * (numQubits - countZeros(stateIn)) - (countZeros(stateIn))
+
+                workcost += eigenvalue * (stateOutProb - stateInProb)
+        return workcost
+    
+    def toPermutationList(self):
+        """
+        Returns a permutation list from the Cooling Unitary.
+        """
+        if(type(self.coolingUnitary) is np.ndarray):
+            return self._coolingUnitaryToPermutationList(self.coolingUnitary)
+        else:
+            return self._compressedCoolingUnitaryToPermutationList(self.coolingUnitary)
+        
+    def dot(self,m):
+        """
+        Dot product between two Cooling Unitaries.
+        """
+        self.coolingUnitary = self.coolingUnitary.dot(m.getCoolingUnitary())
+        return self
+    
+    def testUnitary(self,excitedStateProbability=0):
+        """ 
+        Testing an Unitary.
+        OPTIONAL Parameters:
+            excitedStateProbability (float): Probability of the excited state.
+            OR
+            excitedStateProbability (list): List of probability of the excited state for each qubit. 
+        """
+        m = self.coolingUnitary
+        # Check if the matrix is unitary
+        if(type(m) is np.ndarray):   
+            if(is_unitary(m) == False):
+                raise ValueError("Not an unitary Matrix")
+            numberOfStates = len(m) 
+        else:
+            x = m.conjugate().transpose().dot(m)
+            y = sp.sparse.eye(x.shape[1]).tocsr()
+            if(not(np.all(x.indices == y.indices) and np.all(x.indptr == y.indptr) and np.allclose(x.data, y.data))):
+                raise ValueError("Not an unitary Matrix")
+            numberOfStates = m.shape[0]
+
+        numQubits = int(math.log2(numberOfStates))
+
+        if(isinstance(excitedStateProbability, list)):
+            if(len(excitedStateProbability) != numQubits):
+                raise ValueError("Number of elements inside of the list is different than number of Qubits.")
+        # 1 column with 2 ** NumQubits 
+        state = np.zeros((numberOfStates,1))
+        lowestTopHalf = 99
+        highestTopHalf = 0
+        lowestElement = 99
+        highestElement = 0
+        for i in range(numberOfStates):
+            # i = 0,  State 00 = [1 0 0 0] 
+            # i = 1,  State 01 = [0 1 0 0] 
+
+            #Application of the unitary
+            state[i,0] = 1 
+            matrix = m.dot(state) 
+            indices = np.where(matrix == 1)
+
+            #Probably not necessary
+            if len(indices[0]) > 1:
+                raise ValueError("Error")
+            
+            
+            outputState = int(indices[0][0])
+            numberOfZeros = countZeros(integerToBinary(outputState,numQubits))
+            if(isinstance(excitedStateProbability, list)):
+                numberInBinary = integerToBinary(outputState,numQubits)
+                probability = 1
+                for j in range(numQubits):
+                    if(numberInBinary[j] == "1"):
+                        probability *= excitedStateProbability[j]
+                    else:
+                        probability *= (1-excitedStateProbability[j])    
+                probability = round(probability,numQubits+3)
+            else:
+                probability = (excitedStateProbability ** (numQubits - numberOfZeros)) * ((1 - excitedStateProbability)** numberOfZeros)
+
+            if(lowestElement > probability):
+                lowestElement = probability
+            if(highestElement < probability):
+                highestElement = probability
+                #print(highestElement)
+            numOfDigits = len(str(numberOfStates))
+            if(outputState == i):
+                if(excitedStateProbability == 0):
+                    print(format(i).zfill(numOfDigits) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits))
+                else:
+                    print(format(i).zfill(numOfDigits) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits) + " | " + str(probability))
+            else:
+                if(excitedStateProbability == 0):
+                    print(format(i).zfill(numOfDigits) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits) + " (*)")
+                else:
+                    print(format(i).zfill(numOfDigits) + " | " + integerToBinary(i,numQubits) + " --> " + integerToBinary(outputState,numQubits) + " | " + str(probability) + " (*)")
+            if(i == (numberOfStates //2)-1):
+                print("--------------------------")
+                lowestTopHalf = lowestElement
+                highestTopHalf = highestElement
+                lowestElement = 99
+                highestElement = 0
+            #print(state)
+            #print(matrix)
+
+            # Return to all zero matrix
+            state[i,0] = 0
+        if(excitedStateProbability != 0):
+            print("Lowest Element TOP LIST: " + str(lowestTopHalf))
+            print("Highest Element TOP LIST: " + str(highestTopHalf))
+            print("Lowest Element BOT LIST: " + str(lowestElement))
+            print("Highest Element BOT LIST: " + str(highestElement))
+
     def _checkInputParameters(self,numQubits,swapList):
         """
         Private: Check of the Input parameters.
@@ -101,6 +262,77 @@ class CoolingUnitary:
                 col.append(i)
         
         self.coolingUnitary = csr_array((data, (row, col)), shape=(numOfStates, numOfStates))
+        
+    def _coolingUnitaryToPermutationList(m):
+        """
+        Returns a Permutation list from a Cooling Unitary.
 
+        Parameters:
+            CoolingUnitary (numpy.ndarray)
+        Return:
+            Permutation List (list)
+        """
+        
+        statesInSwapCycle = set()
+        numberOfStates = len(m)
+        permutationsList = []
 
+        for i in range(numberOfStates):
+            index = i
+            #If the state is NOT swapped with itself
+            if(m[index][index] != 1):
+                #Check if the state is NOT already inside of a swap cycle
+                if(index not in statesInSwapCycle):
+                    l = [index]
+                    statesInSwapCycle.add(index)
+                    nextIndex = -1
 
+                    #Find this state is swapped to
+                    for j in range(len(m[i])):
+                        if(m[j][i] == 1):
+                            nextIndex = j
+                            break
+                    #Cycle until we return to the starting state
+                    while(index != nextIndex):
+                        l.append(nextIndex)
+                        statesInSwapCycle.add(nextIndex)
+                        for j in range(len(m[nextIndex])):
+                            if(m[j][nextIndex] == 1):
+                                nextIndex = j
+                                break 
+                    permutationsList.append(l)
+
+        return permutationsList
+    
+    def _compressedCoolingUnitaryToPermutationList(ma):
+        """
+        Returns a Permutation list from a Compressed Cooling Unitary.
+
+        Parameters:
+            CoolingUnitary (numpy.ndarray)
+        Return:
+            Permutation List (list)
+        """
+        
+        statesInSwapCycle = set()
+        m = ma.indices
+        numberOfStates = len(m)
+        permutationsList = []
+        for index in range(numberOfStates):
+
+            if(index != m[index]):
+                #Check if the state is NOT already inside of a swap cycle
+                if(index not in statesInSwapCycle):
+                    l = [int(index)]
+                    statesInSwapCycle.add(index)
+                    nextIndex = m[index]
+                    l1 = []
+                    #Cycle until we return to the starting state
+                    while(index != nextIndex):
+                        l1.append(int(nextIndex))
+                        statesInSwapCycle.add(nextIndex)
+                        nextIndex = m[nextIndex]
+                    permutationsList.append(l + l1[::-1])
+        return permutationsList
+
+    
