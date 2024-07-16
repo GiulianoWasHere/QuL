@@ -24,6 +24,8 @@ class SemiOpenCooling:
         barriers (bool): Barriers in the circuit.
     Return:
         SemiOpenCooling (SemiOpenCooling)
+    Notes:
+        The circuit cools the last qubit. 
     """
     _numQubits = None
     _coolingUnitary = None

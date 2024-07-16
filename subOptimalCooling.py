@@ -1,10 +1,12 @@
 from qiskit import QuantumRegister
 from qiskit import ClassicalRegister
 from qiskit import QuantumCircuit
+from utils import *
+from coolingCircuit import CoolingCircuit
 
-class SubOptimalCoolingCircuit:
+class SubOptimalCooling:
     """
-    ## SubOptimalCoolingCircuit(circuit,rounds)
+    ## SubOptimalCooling(circuit,rounds,barriers)
 
     Class for the Sub Optimal Cooling circuit. 
 
@@ -12,23 +14,30 @@ class SubOptimalCoolingCircuit:
         circuit (QuantumCircuit): Cooling circuit.
         rounds (int): number of rounds of Sub Optimal Cooling
     Return:
-        coolingCircuit (QuantumCircuit)
+        SubOptimalCooling (SubOptimalCooling)
     Notes:
         The circuit cools the last qubit. 
     """
-    _circuit = None
+    _numQubits = None
+    _coolingUnitary = None
+    _barriers = False
     _rounds = 1
-    def __new__(cls,circuit=_circuit,rounds = _rounds):
+    _circuit = None
+    def __init__(self,coolingUnitary=_coolingUnitary,rounds = _rounds,barriers=_barriers):
+        self._numQubits,self._coolingUnitary = checkInputMatrix(coolingUnitary)
+        self._rounds = rounds
+        self._barriers = barriers
+        self._circuit = self._buildCircuit(CoolingCircuit(self._numQubits,coolingUnitary=self._coolingUnitary,barriers=self._barriers),self._rounds)
 
-        cls._circuit = circuit
-        cls._rounds = rounds
-
-        if(isinstance(cls._circuit,QuantumCircuit)):
-            return cls._buildCircuit(cls,cls._circuit,cls._rounds)
-        else:
-            raise ValueError("Input is not a circuit.")
+    def getCircuit(self):
+        """
+        ## getCircuit()
+        Return:
+            Cooling Circuit (QuantumCircuit)
+        """
+        return self._circuit
     
-    def _createList(i,j,numQubits):
+    def _createList(self,i,j,numQubits):
         """
         Private: Create the list of the qubits.
         """
@@ -36,7 +45,6 @@ class SubOptimalCoolingCircuit:
         step = numQubits ** i
         if(i > 0):
             for k in range(numQubits):
-                #l.append(k* step + j * numQubits * step + i*(numQubits)-1)
                 l.append(k* step + j * numQubits * step + numQubits ** i - 1)
         else:
             for k in range(numQubits):
@@ -52,7 +60,6 @@ class SubOptimalCoolingCircuit:
         #Number of qubits in the final circuit
         numberOfQubits = qubitsCircuit ** times
         quantumRegisters = QuantumRegister(numberOfQubits,"q")
-        #classicalRegisters = ClassicalRegister(1,"c")
         finalCircuit = QuantumCircuit(quantumRegisters)
 
         for i in range(times-1):

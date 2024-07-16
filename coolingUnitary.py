@@ -41,13 +41,13 @@ class CoolingUnitary:
         self._swapList = listIntegerToBinary(self._swapList,numQubits)
         self._makeMatrix()
     
-    def getCoolingUnitary(self):
+    def getUnitary(self):
         """
         Returns the Cooling Unitary.
         """
         return self.coolingUnitary
     
-    def calculateWorkCost(self,w,excitedState):
+    def calculateWorkCost(self,excitedState,w=1):
         """
         ## calculateWorkCost(excitedState,w)
             Calculate the work cost of the Unitary.
@@ -87,7 +87,7 @@ class CoolingUnitary:
                 workcost += eigenvalue * (stateOutProb - stateInProb)
         return workcost
     
-    def toPermutationList(self):
+    def getPermutations(self):
         """
         Returns a permutation list from the Cooling Unitary.
         """
@@ -100,7 +100,7 @@ class CoolingUnitary:
         """
         Dot product between two Cooling Unitaries.
         """
-        self.coolingUnitary = self.coolingUnitary.dot(m.getCoolingUnitary())
+        self.coolingUnitary = self.coolingUnitary.dot(m.getUnitary())
         return self
     
     def testUnitary(self,excitedStateProbability=0):
@@ -334,5 +334,3 @@ class CoolingUnitary:
                         nextIndex = m[nextIndex]
                     permutationsList.append(l + l1[::-1])
         return permutationsList
-
-    

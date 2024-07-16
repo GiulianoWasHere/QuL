@@ -13,7 +13,7 @@ from qiskit import QuantumCircuit
 
 class HeatBathCooling():
     """
-    ## HeatBathCooling(circuit,rounds)
+    ## HeatBathCooling(circuit,rounds,barriers)
 
     Class for the Heat Bath Cooling. 
 
@@ -24,6 +24,8 @@ class HeatBathCooling():
         barriers (bool): Barriers in the circuit.
     Return:
         HeatBathCooling (HeatBathCooling)
+    Notes:
+        The circuit cools the last qubit. 
     """
     _numQubits = None
     _coolingUnitary = None

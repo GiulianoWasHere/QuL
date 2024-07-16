@@ -13,7 +13,7 @@ from qiskit import QuantumCircuit
 
 class DynamicCooling():
     """
-    ## DynamicCooling(circuit,rounds)
+    ## DynamicCooling(circuit,rounds,barriers)
 
     Class for the Dynamic Cooling. 
 
@@ -24,6 +24,8 @@ class DynamicCooling():
         barriers (bool): Barriers in the circuit.
     Return:
         DynamicCooling (DynamicCooling)
+    Notes:
+        The circuit cools the last qubit. 
     """
     _numQubits = None
     _coolingUnitary = None

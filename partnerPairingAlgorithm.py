@@ -56,10 +56,6 @@ class PartnerPairingAlgorithm:
                 dictionary[li[i][index]].append([li[i][0],i]) 
         return dictionary
     
-    def printVector(vec):
-        for i in range(len(vec)):
-            print(vec[i])
-    
     def _minSwapsAlgorithm(self,li):
         """
         Private: Minimum swap algorithm.
