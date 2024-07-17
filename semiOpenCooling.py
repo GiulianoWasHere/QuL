@@ -36,10 +36,26 @@ class SemiOpenCooling:
         self._numQubits,self._coolingUnitary = checkInputMatrix(coolingUnitary)
         self._rounds = rounds
         self._barriers = barriers
+        if(self._rounds < 1 ):
+            raise ValueError("Rounds have to be >= 1.")   
         self._circuit = self._buildCircuit(CoolingCircuit(self._numQubits,coolingUnitary=self._coolingUnitary,barriers=self._barriers),self._rounds)
 
     def getCircuit(self):
         return self._circuit
+    
+    def calculateFinalTemp(self,excitedStateProbability):
+        numberOfStates = 2 ** self._numQubits
+        if(not(isinstance(excitedStateProbability, list))):
+            excitedStateProbability = self._numQubits * [excitedStateProbability]
+        for j in range(self._rounds):
+            initialVector = generateInitialVector(self._numQubits,excitedStateProbability)
+            finalVector = initialVector.dot(self._coolingUnitary)
+            finalprob = 1
+            for i in range(int(numberOfStates/2)):
+                finalprob -= finalVector[:, [i]].data[0]
+            excitedStateProbability[0] = finalprob
+            print(excitedStateProbability)
+        return finalprob
     
     def _buildCircuit(self,circuit,times):
         """

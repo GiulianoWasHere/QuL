@@ -45,8 +45,12 @@ class DynamicCooling():
         return self._circuit
     
     def calculateFinalTemp(self,excitedStateProbability):
-        initialVector = generateInitialVector(self._coolingUnitary,excitedStateProbability)
-        if(type(self._coolingUnitary) is np.ndarray):
-            finalVector = initialVector.toarray().dot(self._coolingUnitary)
-        else:
-            finalVector = initialVector.dot(self._coolingUnitary)
+        numberOfStates = 2 ** self._numQubits
+        initialVector = generateInitialVector(self._numQubits,excitedStateProbability)
+        finalVector = initialVector.dot(self._coolingUnitary)
+        finalprob = 1
+        for i in range(int(numberOfStates/2)):
+            finalprob -= finalVector[:, [i]].data[0]
+        return finalprob
+    
+    
