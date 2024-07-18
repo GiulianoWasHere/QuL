@@ -1,12 +1,7 @@
-import numpy as np
-import scipy as sp
-
-from coolingUnitary import CoolingUnitary
 from utils.coolingCircuit import CoolingCircuit
 from utils.utils import *
 
 #Qiskit
-import qiskit as qk
 from qiskit import QuantumRegister
 from qiskit import ClassicalRegister
 from qiskit import QuantumCircuit
@@ -41,9 +36,23 @@ class SemiOpenCooling:
         self._circuit = self._buildCircuit(CoolingCircuit(self._numQubits,coolingUnitary=self._coolingUnitary,barriers=self._barriers),self._rounds)
 
     def getCircuit(self):
+        """
+        ## getCircuit()
+        Return:
+            Cooling Circuit (QuantumCircuit)
+        """
         return self._circuit
     
     def calculateFinalTemp(self,excitedStateProbability):
+        """
+        ## calculateFinalTemp(excitedState)
+            Calculate the final temp after the application of the circuit.
+
+        Parameters:
+            excitedStateProbability (float): Probability of the excited state.
+        Return:
+            Final State Probability (float)
+        """  
         numberOfStates = 2 ** self._numQubits
         if(not(isinstance(excitedStateProbability, list))):
             excitedStateProbability = self._numQubits * [excitedStateProbability]

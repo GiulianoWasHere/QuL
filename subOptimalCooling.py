@@ -1,5 +1,4 @@
 from qiskit import QuantumRegister
-from qiskit import ClassicalRegister
 from qiskit import QuantumCircuit
 from utils.utils import *
 from utils.coolingCircuit import CoolingCircuit
@@ -40,6 +39,15 @@ class SubOptimalCooling:
         return self._circuit
     
     def calculateFinalTemp(self,excitedStateProbability):
+        """
+        ## calculateFinalTemp(excitedState)
+            Calculate the final temp after the application of the circuit.
+
+        Parameters:
+            excitedStateProbability (float): Probability of the excited state.
+        Return:
+            Final State Probability (float)
+        """  
         numberOfStates = 2 ** self._numQubits
         if(not(isinstance(excitedStateProbability, list))):
             excitedStateProbability = self._numQubits * [excitedStateProbability]

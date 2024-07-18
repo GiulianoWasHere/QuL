@@ -1,10 +1,6 @@
-from collections import Counter
-import numpy as np
-
 from coolingUnitary import CoolingUnitary
 from utils.occupationProbabilitiesList import OccupationProbabilitiesList
 from utils.utils import *
-from utils.coolingCircuit import CoolingCircuit
 
 class MinimalWorkProtocol:
     """

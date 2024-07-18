@@ -5,9 +5,6 @@ import scipy as sp
 from scipy.sparse import csr_array
 from utils.utils import *
 
-import qiskit as qk
-from qiskit import QuantumCircuit
-
 class CoolingUnitary:
     """
     ## CoolingUnitary(numQubits,swapList)
