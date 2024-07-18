@@ -2,8 +2,8 @@ import numpy as np
 import scipy as sp
 
 from coolingUnitary import CoolingUnitary
-from coolingCircuit import CoolingCircuit
-from utils import *
+from utils.coolingCircuit import CoolingCircuit
+from utils.utils import *
 
 #Qiskit
 import qiskit as qk
@@ -54,7 +54,6 @@ class SemiOpenCooling:
             for i in range(int(numberOfStates/2)):
                 finalprob -= finalVector[:, [i]].data[0]
             excitedStateProbability[0] = finalprob
-            print(excitedStateProbability)
         return finalprob
     
     def _buildCircuit(self,circuit,times):

@@ -2,7 +2,7 @@ import numpy as np
 import scipy as sp
 
 from coolingUnitary import CoolingUnitary
-from utils import *
+from utils.utils import *
 
 #Qiskit
 import qiskit as qk

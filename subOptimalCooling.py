@@ -1,8 +1,8 @@
 from qiskit import QuantumRegister
 from qiskit import ClassicalRegister
 from qiskit import QuantumCircuit
-from utils import *
-from coolingCircuit import CoolingCircuit
+from utils.utils import *
+from utils.coolingCircuit import CoolingCircuit
 
 class SubOptimalCooling:
     """
@@ -50,7 +50,6 @@ class SubOptimalCooling:
             for i in range(int(numberOfStates/2)):
                 finalprob -= finalVector[:, [i]].data[0]
             excitedStateProbability = self._numQubits * [finalprob] 
-            print(excitedStateProbability)
         return finalprob
     
     def _createList(self,i,j,numQubits):

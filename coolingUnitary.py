@@ -3,7 +3,7 @@ from scipy.constants import Planck
 import numpy as np
 import scipy as sp
 from scipy.sparse import csr_array
-from utils import *
+from utils.utils import *
 
 import qiskit as qk
 from qiskit import QuantumCircuit

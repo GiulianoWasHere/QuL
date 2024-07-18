@@ -2,8 +2,8 @@ import numpy as np
 import scipy as sp
 
 from coolingUnitary import CoolingUnitary
-from coolingCircuit import CoolingCircuit
-from utils import *
+from utils.coolingCircuit import CoolingCircuit
+from utils.utils import *
 
 #Qiskit
 import qiskit as qk
