@@ -1,5 +1,7 @@
-from utils.coolingCircuit import CoolingCircuit
-from utils.utils import *
+from .coolingCircuit import CoolingCircuit
+from .utils.utils import *
+
+from .coolingUnitary import checkInputMatrix
 
 from qiskit import QuantumRegister
 from qiskit import ClassicalRegister

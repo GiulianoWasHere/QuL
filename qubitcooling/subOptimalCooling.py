@@ -1,8 +1,8 @@
 from qiskit import QuantumRegister
 from qiskit import QuantumCircuit
-from utils.utils import *
-from utils.coolingCircuit import CoolingCircuit
-
+from .utils.utils import *
+from .coolingCircuit import CoolingCircuit
+from .coolingUnitary import checkInputMatrix
 class SubOptimalCooling:
     """
     ## SubOptimalCooling(circuit,rounds,barriers)

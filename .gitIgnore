@@ -7,3 +7,6 @@ TEST
 storage
 circ.txt
 unit.txt
+build 
+dist
+qubitcooling.egg-info

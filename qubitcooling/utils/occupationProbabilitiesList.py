@@ -1,8 +1,4 @@
-from collections import Counter
-import numpy as np
-
-
-from utils.utils import *
+from .utils import *
 
 
 class OccupationProbabilitiesList:

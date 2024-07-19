@@ -1,6 +1,6 @@
-from coolingUnitary import CoolingUnitary
-from utils.occupationProbabilitiesList import OccupationProbabilitiesList
-from utils.utils import *
+from .coolingUnitary import CoolingUnitary
+from .utils.occupationProbabilitiesList import OccupationProbabilitiesList
+from .utils.utils import *
 
 class MirrorProtocol:
     """

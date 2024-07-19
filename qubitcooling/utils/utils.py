@@ -1,8 +1,4 @@
-from collections import Counter
 import numpy as np
-import math 
-import coolingUnitary as cu
-import scipy as sp
 from scipy.sparse import csr_array
 
 #Utils
@@ -127,31 +123,3 @@ def generateInitialVector(numQubits, excitedStateProbability):
         data.append(probability)
         
     return csr_array((data, (col, row)), shape=(1, numStates))
-
-def checkInputMatrix(m):
-        """
-            Check if a Matrix is Unitary.
-        Parameters:
-            m (numpy.ndarray or sparse._csr.csr_array): Matrix.
-        Return:
-            Number Of Qubits (int)
-        """
-        # Check if the matrix is unitary
-        if(type(m) is np.ndarray):   
-            if(is_unitary(m) == False):
-                raise ValueError("Not an unitary Matrix")
-            numberOfStates = len(m) 
-            return int(math.log2(numberOfStates)),m
-
-        if(type(m) is sp.sparse._csr.csr_array):
-            x = m.conjugate().transpose().dot(m)
-            y = sp.sparse.eye(x.shape[1]).tocsr()
-            if(not(np.all(x.indices == y.indices) and np.all(x.indptr == y.indptr) and np.allclose(x.data, y.data))):
-                raise ValueError("Not an unitary Matrix")
-            numberOfStates = m.shape[0]
-            return int(math.log2(numberOfStates)),m
-        
-        if(type(m) is cu.CoolingUnitary):
-            return m._numQubits,m.coolingUnitary
-
-        raise ValueError("Matrix not a np.ndarray, a csr.array or a Cooling Unitary")

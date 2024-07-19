@@ -1,8 +1,8 @@
 import numpy as np
 import scipy as sp
 
-from coolingUnitary import CoolingUnitary
-from utils.utils import *
+from .coolingUnitary import CoolingUnitary
+from .utils.utils import *
 
 #Qiskit
 import qiskit as qk

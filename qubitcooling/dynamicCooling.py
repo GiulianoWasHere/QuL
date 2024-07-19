@@ -1,5 +1,6 @@
-from utils.coolingCircuit import CoolingCircuit
-from utils.utils import *
+from .coolingCircuit import CoolingCircuit
+from .coolingUnitary import checkInputMatrix
+from .utils.utils import *
 
 class DynamicCooling():
     """
