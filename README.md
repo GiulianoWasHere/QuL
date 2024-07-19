@@ -10,7 +10,7 @@ The package can be installed via pip:
 python3 -m pip install qubitcooling
 ```
 
-##Generate an Unitary
+## Generate an Unitary
 
 TODO
----
+
