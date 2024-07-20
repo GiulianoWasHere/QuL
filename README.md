@@ -33,9 +33,6 @@ from qubitcooling import MinimalWork
 number_of_qubits = 5
 probability_excited_state = 0.2
 unitary = MinimalWork(number_of_qubits,probability_excited_state)
-
-#Print the unitary
-print(unitary.coolingUnitary.toarray())
 ```
 Generate a Cooling Unitary using the `Partner Pairing Algorithm` using a different `probability of the excited state` for each qubit:
 ```python
@@ -44,9 +41,6 @@ from qubitcooling import PartnerPairingAlgorithm
 number_of_qubits = 5
 probability_excited_state = [0.1,0.2,0.05,0.2,0.1]
 unitary = PartnerPairingAlgorithm(number_of_qubits,probability_excited_state)
-
-#Print the unitary
-print(unitary.coolingUnitary.toarray())
 ```
 
 ### Generate a Cooling Unitary using a list of permutations
