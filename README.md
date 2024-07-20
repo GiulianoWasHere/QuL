@@ -83,7 +83,6 @@ circuit = DynamicCooling(unitary,True)
 print(circuit.getCircuit().draw())
 ```
 
-The last three classes 
 ### Heat-Bath Algorithmic Cooling
 Heat-Bath Algorithmic Cooling is implemented using the class `HeatBathCooling`, the required arguments are a Cooling Unitary and the number of rounds. 
 
