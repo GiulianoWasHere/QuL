@@ -54,6 +54,39 @@ unitary = PartnerPairingAlgorithm(number_of_qubits,probability_excited_state)
 print(unitary.coolingUnitary.toarray())
 ```
 
+### Using a list of permutations
+It is possible to generate a Cooling Unitary using a list of permutations using the class `CoolingUnitary`. The required arguments are the number of qubits and the list of permutations. An example where the state `000` is swapped with the state `001`:
+```python
+from qubitcooling import CoolingUnitary
+
+number_of_qubits = 3
+#1 Swaps: 000 <-> 001
+permutations = [["000","001"]] 
+unitary = CoolingUnitary(number_of_qubits,permutations)
+```
+It is possible to create cycles with length greater than 2:
+```python
+from qubitcooling import CoolingUnitary
+
+number_of_qubits = 3
+#The Cycle is 000 -> 001 -> 100 -> 000
+permutations = [["000",1,"100"]] 
+unitary = CoolingUnitary(number_of_qubits,permutations)
+```
+Also a list of permutations can include different cycles:
+```python
+from qubitcooling import CoolingUnitary
+
+number_of_qubits = 3
+#2 Swaps: 000 <-> 001, 010 <-> 011
+permutations = [[0,1],["010","011"]] 
+unitary = CoolingUnitary(number_of_qubits,permutations)
+```
+
+
+
+
+
 
 
 
