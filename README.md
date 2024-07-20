@@ -10,7 +10,7 @@ The package can be installed via pip:
 python3 -m pip install qubitcooling
 ```
 ## Cooling Unitary
-A Cooling Unitary is a generalized permutation matrix which can perform an arbitrary number of permutations of arbitrary lengths on the states. The class `CoolingUnitary` efficently stores the matrix using a `scipy.sparse.csr_array`, the matrix can be accessed by the method `getCoolingUnitary()`. The class allows the user to calculate the work cost of the Unitary with the method `calculateWorkCost()`.
+A Cooling Unitary is a generalized permutation matrix which can perform an arbitrary number of permutations of arbitrary lengths on the quantum states. The class `CoolingUnitary` efficently stores the matrix using a `scipy.sparse.csr_array`, the matrix can be accessed by the method `getCoolingUnitary()`. The class can calculate the work cost of the Unitary with the method `calculateWorkCost()`.
 
 ### Generate a Cooling Unitary using a protocol
 It is possibile to generate a Cooling Unitary using one of the three protocols provided by QuL which are the `Partner Pairing Algorithm`, `Minimal Work` and the `Mirror Protocol`. The only required argument is the number of qubits, optionally the user can provide the probability of the excited state for each qubit. 
@@ -64,7 +64,45 @@ permutations = [[0,1,"100"],["010","011"]]
 unitary = CoolingUnitary(number_of_qubits,permutations)
 ```
 
+## Cooling Circuit
 
+Given a Cooling Unitary, QuL provides four classes to create a Cooling Circuit. In each class the method `getCircuit()` returns a QuantumCircuit by the package `Qiskit`. With the method `calculateFinalTemp()` it is possible to calculate the theorical final temperature of the target qubit. 
+
+### Dynamic Cooling
+Dynamic Cooling is implemented using the class `DynamicCooling`, the only required argument is a Cooling Unitary. An example:
+```python
+from qubitcooling import DynamicCooling
+from qubitcooling import MinimalWork
+
+number_of_qubits = 5
+unitary = MinimalWork(number_of_qubits)
+#The True as the second argument is to show the barriers in the QuantumCircuit
+circuit = DynamicCooling(unitary,True)
+
+#Print the circuit
+print(circuit.getCircuit().draw())
+```
+
+The last three classes 
+### Heat-Bath Algorithmic Cooling
+Heat-Bath Algorithmic Cooling is implemented using the class `HeatBathCooling`, the required arguments are a Cooling Unitary and the number of rounds. 
+
+### Sub-Optimal Dynamic Cooling
+Sub-Optimal Dynamic Cooling is implemented using the class `SubOptimalCooling`, the required arguments are a Cooling Unitary and the number of rounds. 
+
+### Semi-Open Dynamic Cooling
+Semi-Open Dynamic Cooling is implemented using the class `SemiOpenCooling`, the required arguments are a Cooling Unitary and the number of rounds. 
+
+Example:
+```python
+from qubitcooling import HeatBathCooling
+from qubitcooling import MinimalWork
+
+number_of_qubits = 5
+unitary = MinimalWork(number_of_qubits)
+rounds = 3
+circuit = HeatBathCooling(unitary,rounds,False)
+```
 
 
 
