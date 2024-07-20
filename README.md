@@ -9,7 +9,7 @@ The package can be installed via pip:
 ```
 python3 -m pip install qubitcooling
 ```
-##Cooling Unitary
+## Cooling Unitary
 A Cooling Unitary is a generalized permutation matrix which can perform an arbitrary number of permutations of arbitrary lengths on the states. The class `CoolingUnitary` efficently stores the matrix using a `scipy.sparse.csr_array`, the matrix can be accessed by the method `getCoolingUnitary()`. The class allows the user to calculate the work cost of the Unitary with the method `calculateWorkCost()`.
 
 ### Generate a Cooling Unitary using a protocol
