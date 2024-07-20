@@ -9,16 +9,11 @@ The package can be installed via pip:
 ```
 python3 -m pip install qubitcooling
 ```
+##Cooling Unitary
+A Cooling Unitary is a generalized permutation matrix which can perform an arbitrary number of permutations of arbitrary lengths on the states. The class `CoolingUnitary` efficently stores the matrix using a `scipy.sparse.csr_array`, the matrix can be accessed by the method `getCoolingUnitary()`. The class allows the user to calculate the work cost of the Unitary with the method `calculateWorkCost()`.
 
-## Generate a Cooling Unitary
-
-There are two ways to generate a Cooling Unitary:
-
-1. Using one of the three protocols provided by QuL.
-2. A list of permutations provided by the user.
-
-### Using a protocol
-The three protocols provided by QuL are `Partner Pairing Algorithm`, `Minimal Work` and the `Mirror Protocol`. The only required argument is the number of qubits, optionally the user can provide the probability of the excited state for each qubit. 
+### Generate a Cooling Unitary using a protocol
+It is possibile to generate a Cooling Unitary using one of the three protocols provided by QuL which are the `Partner Pairing Algorithm`, `Minimal Work` and the `Mirror Protocol`. The only required argument is the number of qubits, optionally the user can provide the probability of the excited state for each qubit. 
 
 In this example a Cooling unitary is generated using the `Mirror Protocol`:
 ```python
@@ -54,7 +49,7 @@ unitary = PartnerPairingAlgorithm(number_of_qubits,probability_excited_state)
 print(unitary.coolingUnitary.toarray())
 ```
 
-### Using a list of permutations
+### Generate a Cooling Unitary using a list of permutations
 It is possible to generate a Cooling Unitary using a list of permutations using the class `CoolingUnitary`. The required arguments are the number of qubits and the list of permutations. An example where the state `000` is swapped with the state `001`:
 ```python
 from qubitcooling import CoolingUnitary
