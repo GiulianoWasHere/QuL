@@ -64,17 +64,9 @@ It is possible to create cycles with length greater than 2:
 from qubitcooling import CoolingUnitary
 
 number_of_qubits = 3
-#The Cycle is 000 -> 001 -> 100 -> 000
-permutations = [["000",1,"100"]] 
-unitary = CoolingUnitary(number_of_qubits,permutations)
-```
-Also a list of permutations can include different cycles:
-```python
-from qubitcooling import CoolingUnitary
-
-number_of_qubits = 3
-#2 Swaps: 000 <-> 001, 010 <-> 011
-permutations = [[0,1],["010","011"]] 
+#1 Cycle is 000 -> 001 -> 100 -> 000
+#2 Cycle is 010 <-> 011
+permutations = [[0,1,"100"],["010","011"]] 
 unitary = CoolingUnitary(number_of_qubits,permutations)
 ```
 
