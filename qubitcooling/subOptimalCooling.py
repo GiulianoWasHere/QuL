@@ -38,16 +38,16 @@ class SubOptimalCooling:
         """
         return self._circuit
     
-    def calculateFinalTemp(self,excitedStateProbability):
+    def calculateFinalProbability(self,excitedStateProbability):
         """
-        ## calculateFinalTemp(excitedState)
-            Calculate the final temp after the application of the circuit.
+        ## calculateFinalProbability(excitedState)
+            Calculate the final probability after the application of the circuit.
 
         Parameters:
             excitedStateProbability (float): Probability of the excited state.
         Return:
             Final State Probability (float)
-        """  
+        """   
         numberOfStates = 2 ** self._numQubits
         if(not(isinstance(excitedStateProbability, list))):
             excitedStateProbability = self._numQubits * [excitedStateProbability]
@@ -59,6 +59,20 @@ class SubOptimalCooling:
                 finalprob -= finalVector[:, [i]].data[0]
             excitedStateProbability = self._numQubits * [finalprob] 
         return finalprob
+    
+    def calculateFinalTemperature(self,temperature,w):
+        """
+        ## calculateFinalProbability(excitedState)
+            Calculate the final temperature after the application of the circuit.
+
+        Parameters:
+            temperature (float): temperature of the target qubit in milliKelvin (mK)
+            w (float): Resonant frequency of qubit
+        Return:
+            Final Temperature (float) : final temperature in milliKelvin (mK)
+        """  
+        prob = temperatureToProbability(temperature,w)
+        return probabilityToTemperature(self.calculateFinalProbability(prob),w)
     
     def _createList(self,i,j,numQubits):
         """

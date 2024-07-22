@@ -35,10 +35,10 @@ class DynamicCooling():
         """
         return self._circuit
     
-    def calculateFinalTemp(self,excitedStateProbability):
+    def calculateFinalProbability(self,excitedStateProbability):
         """
-        ## calculateFinalTemp(excitedState)
-            Calculate the final temp after the application of the circuit.
+        ## calculateFinalProbability(excitedState)
+            Calculate the final probability after the application of the circuit.
 
         Parameters:
             excitedStateProbability (float): Probability of the excited state.
@@ -52,5 +52,20 @@ class DynamicCooling():
         for i in range(int(numberOfStates/2)):
             finalprob -= finalVector[:, [i]].data[0]
         return finalprob
+    
+    def calculateFinalTemperature(self,temperature,w):
+        """
+        ## calculateFinalProbability(excitedState)
+            Calculate the final temperature after the application of the circuit.
+
+        Parameters:
+            temperature (float): temperature of the target qubit in milliKelvin (mK)
+            w (float): Resonant frequency of qubit
+        Return:
+            Final Temperature (float) : final temperature in milliKelvin (mK)
+        """  
+        prob = temperatureToProbability(temperature,w)
+        return probabilityToTemperature(self.calculateFinalProbability(prob),w)
+
     
     

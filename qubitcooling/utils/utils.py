@@ -1,5 +1,8 @@
 import numpy as np
 from scipy.sparse import csr_array
+from scipy.constants import Planck
+from scipy.constants import Boltzmann
+import numpy as np
 
 #Utils
 
@@ -123,3 +126,13 @@ def generateInitialVector(numQubits, excitedStateProbability):
         data.append(probability)
         
     return csr_array((data, (col, row)), shape=(1, numStates))
+
+def temperatureToProbability(temperature,w):
+    hw = Planck * w
+    kb = Boltzmann
+    return 1/(np.exp(hw/(kb*temperature))+ 1)
+
+def probabilityToTemperature(probability,w):
+    hw = Planck * w
+    kb = Boltzmann
+    return hw/(kb*np.log(1/probability -1))
