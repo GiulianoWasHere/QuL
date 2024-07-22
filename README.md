@@ -64,7 +64,7 @@ permutations = [[0,1,"100"],["010","011"]]
 unitary = CoolingUnitary(number_of_qubits,permutations)
 ```
 
-## Cooling Circuit
+## Generate a Cooling Circuit
 
 Given a Cooling Unitary, QuL provides four classes to create a Cooling Circuit. In each class the method `getCircuit()` returns a QuantumCircuit by the package `Qiskit`. With the method `calculateFinalTemp()` it is possible to calculate the theorical final temperature of the target qubit. 
 
