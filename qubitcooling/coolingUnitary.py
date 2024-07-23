@@ -45,54 +45,29 @@ class CoolingUnitary:
         """
         return self.coolingUnitary
     
-    def calculateWorkCost(self,excitedState,w=1):
+    def calculateWorkCost(self,excitedStateProbability,w=1):
         """
-        ## calculateWorkCost(excitedState,w)
+        ## calculateWorkCost(excitedStateProbability,w)
             Calculate the work cost of the Unitary.
 
         Parameters:
-            excitedStateProbability (float): Probability of the excited state.
-            (Optional) w (float): Resonant frequency of qubit
+            excitedStateProbability (float): Probability of the excited state for all qubits.
+            OR
+            excitedStateProbability (list): Probability of the excited state for each qubit.
+            (Optional) w (float): Resonant frequency of qubit (GHz)
         Return:
             Work Cost (float)
-        """       
-        m = self.coolingUnitary
-        if(type(m) is np.ndarray):
-            l = self._coolingUnitaryToPermutationList(m)
-            numberOfStates = len(m) 
-            numQubits = int(math.log2(numberOfStates))
-        elif(type(m) is sp.sparse._csr.csr_array):
-            l = self._compressedCoolingUnitaryToPermutationList(m)
-            numberOfStates = m.shape[0]
-            numQubits = int(math.log2(numberOfStates))
-        else:
-            ValueError("Matrix is not a np.ndarray or a csr array")
-        workcost = 0
-        for i in range(len(l)):
-            for j in range(len(l[i])):
-                if(j != len(l[i])-1):
-                    stateIn = integerToBinary(l[i][j],numQubits)
-                    stateOut = integerToBinary(l[i][j+1],numQubits)
-                else:
-                    stateIn = integerToBinary(l[i][j],numQubits)
-                    stateOut = integerToBinary(l[i][0],numQubits)
-
-                stateInProb = countZeros(stateIn) * (1 - excitedState) + (numQubits - countZeros(stateIn) * excitedState)
-                stateOutProb = countZeros(stateOut) * (1 - excitedState) + (numQubits - countZeros(stateOut) * excitedState)
-
-                eigenvalue = Planck * w/2 * (numQubits - countZeros(stateIn)) - (countZeros(stateIn))
-
-                workcost += eigenvalue * (stateOutProb - stateInProb)
-        return workcost
+        """      
+        return workCost(self.coolingUnitary,excitedStateProbability,w)
     
     def getPermutations(self):
         """
         Returns a permutation list from the Cooling Unitary.
         """
         if(type(self.coolingUnitary) is np.ndarray):
-            return self._coolingUnitaryToPermutationList(self.coolingUnitary)
+            return coolingUnitaryToPermutationList(self.coolingUnitary)
         else:
-            return self._compressedCoolingUnitaryToPermutationList(self.coolingUnitary)
+            return compressedCoolingUnitaryToPermutationList(self.coolingUnitary)
         
     def dot(self,m):
         """
@@ -260,49 +235,98 @@ class CoolingUnitary:
                 col.append(i)
         
         self.coolingUnitary = csr_array((data, (row, col)), shape=(numOfStates, numOfStates))
-        
-    def _coolingUnitaryToPermutationList(m):
-        """
-        Returns a Permutation list from a Cooling Unitary.
 
-        Parameters:
-            CoolingUnitary (numpy.ndarray)
-        Return:
-            Permutation List (list)
-        """
-        
-        statesInSwapCycle = set()
-        numberOfStates = len(m)
-        permutationsList = []
+def workCost(m,excitedStateProbability,w):
+    """
+    ## workCost(excitedStateProbability,w)
+        Calculate the work cost of the Unitary.
 
-        for i in range(numberOfStates):
-            index = i
-            #If the state is NOT swapped with itself
-            if(m[index][index] != 1):
-                #Check if the state is NOT already inside of a swap cycle
-                if(index not in statesInSwapCycle):
-                    l = [index]
-                    statesInSwapCycle.add(index)
-                    nextIndex = -1
+    Parameters:
+        excitedStateProbability (float): Probability of the excited state for all qubits.
+        OR
+        excitedStateProbability (list): Probability of the excited state for each qubit.
+        (Optional) w (float): Resonant frequency of qubit
+    Return:
+        Work Cost (float)
+    """
+    if(type(m) is np.ndarray):
+        l = coolingUnitaryToPermutationList(m)
+        numberOfStates = len(m) 
+        numQubits = int(math.log2(numberOfStates))
+    elif(type(m) is sp.sparse._csr.csr_array):
+        l = compressedCoolingUnitaryToPermutationList(m)
+        numberOfStates = m.shape[0]
+        numQubits = int(math.log2(numberOfStates))
+    else:
+        ValueError("Matrix is not a np.ndarray or a csr array")
+    usingList = False
+    if(isinstance(excitedStateProbability, list)):
+        usingList = True
+        if(len(excitedStateProbability) != numQubits):
+            raise ValueError("Number of elements inside of the list is different than number of Qubits.")
+    workcost = 0
+    for i in range(len(l)):
+        for j in range(len(l[i])):
+            if(j != len(l[i])-1):
+                stateIn = integerToBinary(l[i][j],numQubits)
+                stateOut = integerToBinary(l[i][j+1],numQubits)
+            else:
+                stateIn = integerToBinary(l[i][j],numQubits)
+                stateOut = integerToBinary(l[i][0],numQubits)
 
-                    #Find this state is swapped to
-                    for j in range(len(m[i])):
-                        if(m[j][i] == 1):
-                            nextIndex = j
-                            break
-                    #Cycle until we return to the starting state
-                    while(index != nextIndex):
-                        l.append(nextIndex)
-                        statesInSwapCycle.add(nextIndex)
-                        for j in range(len(m[nextIndex])):
-                            if(m[j][nextIndex] == 1):
-                                nextIndex = j
-                                break 
-                    permutationsList.append(l)
+            if(usingList):
+                stateInProb = probabilityFromList(numQubits,stateIn,excitedStateProbability)
+                stateOutProb = probabilityFromList(numQubits,stateOut,excitedStateProbability)
+            else:
+                stateInProb = (excitedStateProbability ** (numQubits - countZeros(stateIn))) * ((1 - excitedStateProbability)** countZeros(stateIn))
+                stateOutProb = (excitedStateProbability ** (numQubits - countZeros(stateOut))) * ((1 - excitedStateProbability)** countZeros(stateOut))
 
-        return permutationsList
+            eigenvalue = Planck * w/2 * (numQubits - countZeros(stateIn)) - (countZeros(stateIn))
+            workcost += eigenvalue * (stateOutProb - stateInProb)
+    return workcost
+
+def coolingUnitaryToPermutationList(m):
+    """
+    Returns a Permutation list from a Cooling Unitary.
+
+    Parameters:
+        CoolingUnitary (numpy.ndarray)
+    Return:
+        Permutation List (list)
+    """
     
-    def _compressedCoolingUnitaryToPermutationList(ma):
+    statesInSwapCycle = set()
+    numberOfStates = len(m)
+    permutationsList = []
+
+    for i in range(numberOfStates):
+        index = i
+        #If the state is NOT swapped with itself
+        if(m[index][index] != 1):
+            #Check if the state is NOT already inside of a swap cycle
+            if(index not in statesInSwapCycle):
+                l = [index]
+                statesInSwapCycle.add(index)
+                nextIndex = -1
+
+                #Find this state is swapped to
+                for j in range(len(m[i])):
+                    if(m[j][i] == 1):
+                        nextIndex = j
+                        break
+                #Cycle until we return to the starting state
+                while(index != nextIndex):
+                    l.append(nextIndex)
+                    statesInSwapCycle.add(nextIndex)
+                    for j in range(len(m[nextIndex])):
+                        if(m[j][nextIndex] == 1):
+                            nextIndex = j
+                            break 
+                permutationsList.append(l)
+
+    return permutationsList
+
+def compressedCoolingUnitaryToPermutationList(ma):
         """
         Returns a Permutation list from a Compressed Cooling Unitary.
 
@@ -332,7 +356,7 @@ class CoolingUnitary:
                         nextIndex = m[nextIndex]
                     permutationsList.append(l + l1[::-1])
         return permutationsList
-    
+
 def checkInputMatrix(m):
         """
             Check if a Matrix is Unitary.

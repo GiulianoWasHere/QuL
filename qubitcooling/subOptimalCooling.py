@@ -3,6 +3,7 @@ from qiskit import QuantumCircuit
 from .utils.utils import *
 from .coolingCircuit import CoolingCircuit
 from .coolingUnitary import checkInputMatrix
+from .coolingUnitary import workCost
 class SubOptimalCooling:
     """
     ## SubOptimalCooling(circuit,rounds,barriers)
@@ -55,10 +56,15 @@ class SubOptimalCooling:
             initialVector = generateInitialVector(self._numQubits,excitedStateProbability)
             finalVector = initialVector.dot(self._coolingUnitary)
             finalprob = 1
-            for i in range(int(numberOfStates/2)):
-                finalprob -= finalVector[:, [i]].data[0]
+            l = finalVector.tocoo().col
+            for i in range(len(l)):
+                if(l[i] < int(numberOfStates/2)):
+                    finalprob -= finalVector[:, [l[i]]].data[0]
             excitedStateProbability = self._numQubits * [finalprob] 
-        return finalprob
+        if finalprob > 0:
+            return finalprob
+        else:
+            return 0
     
     def calculateFinalTemperature(self,temperature,w):
         """
@@ -67,13 +73,45 @@ class SubOptimalCooling:
 
         Parameters:
             temperature (float): temperature of the target qubit in milliKelvin (mK)
-            w (float): Resonant frequency of qubit
+            w (float): Resonant frequency of qubit (GHz)
         Return:
             Final Temperature (float) : final temperature in milliKelvin (mK)
         """  
         prob = temperatureToProbability(temperature,w)
         return probabilityToTemperature(self.calculateFinalProbability(prob),w)
     
+    def calculateWorkCost(self,excitedStateProbability,w=1):
+        """
+        ## calculateWorkCost(excitedStateProbability,w)
+            Calculate the work cost of the Unitary.
+
+        Parameters:
+            excitedStateProbability (float): Probability of the excited state for all qubits.
+            OR
+            excitedStateProbability (list): Probability of the excited state for each qubit.
+            (Optional) w (float): Resonant frequency of qubit (GHz)
+        Return:
+            Work Cost (float)
+        """      
+        workcost = 0
+        numberOfStates = 2 ** self._numQubits
+        if(not(isinstance(excitedStateProbability, list))):
+            excitedStateProbability = self._numQubits * [excitedStateProbability]
+        for j in range(self._rounds):
+            #for each round calcolate the work cost
+            #MULTIPLY FOR NUMBER OF MATRICES AT THAT ROUND???????????
+            workcost += workCost(self._coolingUnitary,excitedStateProbability,w)
+            initialVector = generateInitialVector(self._numQubits,excitedStateProbability)
+            finalVector = initialVector.dot(self._coolingUnitary)
+            finalprob = 1
+            l = finalVector.tocoo().col
+            for i in range(len(l)):
+                if(l[i] < int(numberOfStates/2)):
+                    finalprob -= finalVector[:, [l[i]]].data[0]
+            excitedStateProbability = self._numQubits * [finalprob] 
+        return workcost
+
+
     def _createList(self,i,j,numQubits):
         """
         Private: Create the list of the qubits.
