@@ -99,8 +99,8 @@ class SubOptimalCooling:
             excitedStateProbability = self._numQubits * [excitedStateProbability]
         for j in range(self._rounds):
             #for each round calcolate the work cost
-            #MULTIPLY FOR NUMBER OF MATRICES AT THAT ROUND???????????
-            workcost += workCost(self._coolingUnitary,excitedStateProbability,w)
+            #We multiply the cost of the unitary for each round
+            workcost += workCost(self._coolingUnitary,excitedStateProbability,w) * self._numQubits ** (self._rounds - j -1)
             initialVector = generateInitialVector(self._numQubits,excitedStateProbability)
             finalVector = initialVector.dot(self._coolingUnitary)
             finalprob = 1

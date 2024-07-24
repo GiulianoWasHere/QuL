@@ -280,8 +280,8 @@ def workCost(m,excitedStateProbability,w):
             else:
                 stateInProb = (excitedStateProbability ** (numQubits - countZeros(stateIn))) * ((1 - excitedStateProbability)** countZeros(stateIn))
                 stateOutProb = (excitedStateProbability ** (numQubits - countZeros(stateOut))) * ((1 - excitedStateProbability)** countZeros(stateOut))
-
-            eigenvalue = Planck * w/2 * (numQubits - countZeros(stateIn)) - (countZeros(stateIn))
+            
+            eigenvalue = (Planck/(2*np.pi))*(w/2)*(10**9) * (numQubits - countZeros(stateIn)) - (countZeros(stateIn))
             workcost += eigenvalue * (stateOutProb - stateInProb)
     return workcost
 
