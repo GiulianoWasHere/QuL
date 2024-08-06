@@ -1,6 +1,6 @@
 # QuL
 
-Description TODO
+QuL is a python package to generate, analyze and test quantum circuits for various computational cooling protocols. 
 
 ## Installation
 
@@ -66,7 +66,7 @@ unitary = CoolingUnitary(number_of_qubits,permutations)
 
 ## Generate a Cooling Circuit
 
-Given a Cooling Unitary, QuL provides four classes to create a Cooling Circuit. In each class the method `getCircuit()` returns a QuantumCircuit by the package `Qiskit`. With the method `calculateFinalTemp()` it is possible to calculate the theorical final temperature of the target qubit. 
+Given a Cooling Unitary, QuL provides four classes to create a Cooling Circuit. In each class the method `getCircuit()` returns a QuantumCircuit by the package `Qiskit`. 
 
 ### Dynamic Cooling
 Dynamic Cooling is implemented using the class `DynamicCooling`, the only required argument is a Cooling Unitary. An example:
@@ -102,6 +102,22 @@ unitary = MinimalWork(number_of_qubits)
 rounds = 3
 circuit = HeatBathCooling(unitary,rounds,False)
 ```
+
+## Calculate work cost and final temperature
+
+After generating a quantum circuit with the method `calculateFinalTemperature()` it is possible to calculate the theorical final temperature of the target qubit. The work cost is calculated with the method `calculateWorkCost()`.
+
+Example:
+```python
+from qubitcooling import HeatBathCooling
+from qubitcooling import MinimalWork
+
+number_of_qubits = 5
+unitary = MinimalWork(number_of_qubits)
+rounds = 3
+circuit = HeatBathCooling(unitary,rounds,False)
+```
+
 
 
 
