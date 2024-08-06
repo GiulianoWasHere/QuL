@@ -57,7 +57,7 @@ class SemiOpenCooling:
         Return:
             Final State Probability (float)
         """   
-        numberOfStates = 2 ** self._numQubits
+        numberOfStates = 2 ** self._numQubits   
         if(not(isinstance(excitedStateProbability, list))):
             excitedStateProbability = self._numQubits * [excitedStateProbability]
         for j in range(self._rounds):

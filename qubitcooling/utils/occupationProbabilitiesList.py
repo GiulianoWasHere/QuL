@@ -22,11 +22,18 @@ class OccupationProbabilitiesList:
 
     def __new__(cls,numQubits=_numQubits,excitedStateProbability=_excitedStateProbability):
         cls._numQubits = numQubits
+        if(cls._numQubits < 3):
+            raise ValueError("Number of qubits must be greater than 2.")
         cls._excitedStateProbability = excitedStateProbability
         if(isinstance(cls._excitedStateProbability, list)):
             if(len(cls._excitedStateProbability) != numQubits):
                 raise ValueError("Number of elements inside of the list is different than number of Qubits.")
+            for i in range(len(cls._excitedStateProbability)):
+                if(cls._excitedStateProbability[i] <= 0 or cls._excitedStateProbability[i] >= 1):
+                    raise ValueError("Probability must be greater than 0 and lower than 1.")  
             return cls._createListWithProbabilityList(cls,cls._numQubits,cls._excitedStateProbability)
+        if(cls._excitedStateProbability <= 0 or cls._excitedStateProbability >= 1):
+            raise ValueError("Probability must be greater than 0 and lower than 1.")  
         return cls._createList(cls,cls._numQubits,cls._excitedStateProbability)
     
     def _createListWithProbabilityList(self,numQubits,listProbability):

@@ -100,11 +100,17 @@ def is_unitary(m):
 
 def generateInitialVector(numQubits, excitedStateProbability):
     usingList = False
+
     if(isinstance(excitedStateProbability, list)):
         usingList = True
         if(len(excitedStateProbability) != numQubits):
             raise ValueError("Number of elements inside of the list is different than number of Qubits.")
-        
+        for i in range(len(excitedStateProbability)):
+            if(excitedStateProbability[i] <= 0 or excitedStateProbability[i] >= 1):
+                raise ValueError("Probability must be greater than 0 and lower than 1.")
+    else:
+        if(excitedStateProbability <= 0 or excitedStateProbability >= 1):
+            raise ValueError("Probability must be greater than 0 and lower than 1.")        
     numStates = 2 ** numQubits
     data = []
     col = numStates * [0]

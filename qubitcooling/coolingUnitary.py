@@ -172,7 +172,9 @@ class CoolingUnitary:
     def _checkInputParameters(self,numQubits,swapList):
         """
         Private: Check of the Input parameters.
-        """   
+        """
+        if(numQubits < 3):
+            raise ValueError("Number of qubits must be greater than 2.")       
         outputMessage = "The Input Parameters are not well formatted"
         maxPossibleValue = (2 ** numQubits)
         greaterInteger = -1
@@ -264,6 +266,12 @@ def workCost(m,excitedStateProbability,w):
         usingList = True
         if(len(excitedStateProbability) != numQubits):
             raise ValueError("Number of elements inside of the list is different than number of Qubits.")
+        for i in range(len(excitedStateProbability)):
+                if(excitedStateProbability[i] <= 0 or excitedStateProbability[i] >= 1):
+                    raise ValueError("Probability must be greater than 0 and lower than 1.")
+    else:
+        if(excitedStateProbability <= 0 or excitedStateProbability >= 1):
+            raise ValueError("Probability must be greater than 0 and lower than 1.")  
     workcost = 0
     for i in range(len(l)):
         for j in range(len(l[i])):
