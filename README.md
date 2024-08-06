@@ -109,13 +109,24 @@ After generating a quantum circuit with the method `calculateFinalTemperature()`
 
 Example:
 ```python
-from qubitcooling import HeatBathCooling
+from qubitcooling import DynamicCooling
 from qubitcooling import MinimalWork
 
 number_of_qubits = 5
 unitary = MinimalWork(number_of_qubits)
-rounds = 3
-circuit = HeatBathCooling(unitary,rounds,False)
+dynamic = DynamicCooling(unitary)
+
+#Probability of target qubit to be in the state |1⟩
+probabilityExcitedState = 0.1
+
+dynamic.calculateFinalProbability(probabilityExcitedState)
+dynamic.calculateWorkCost(probabilityExcitedState)
+
+#Temperature in milliKelvin mK
+temperature = 3.4763
+#Resonant frequency of qubit (GHz)
+w = 1
+dynamic.calculateFinalTemperature(temperature,w)
 ```
 
 
