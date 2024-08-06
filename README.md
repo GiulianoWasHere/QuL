@@ -28,11 +28,11 @@ print(unitary.coolingUnitary.toarray())
 
 A Cooling Unitary generated using the `Minimal Work` using the optional `probability of the excited state`:
 ```python
-from qubitcooling import MinimalWork
+from qubitcooling import MinimalWorkProtocol
 
 number_of_qubits = 5
 probability_excited_state = 0.2
-unitary = MinimalWork(number_of_qubits,probability_excited_state)
+unitary = MinimalWorkProtocol(number_of_qubits,probability_excited_state)
 ```
 Generate a Cooling Unitary using the `Partner Pairing Algorithm` using a different `probability of the excited state` for each qubit:
 ```python
@@ -72,10 +72,10 @@ Given a Cooling Unitary, QuL provides four classes to create a Cooling Circuit. 
 Dynamic Cooling is implemented using the class `DynamicCooling`, the only required argument is a Cooling Unitary. An example:
 ```python
 from qubitcooling import DynamicCooling
-from qubitcooling import MinimalWork
+from qubitcooling import MinimalWorkProtocol
 
 number_of_qubits = 5
-unitary = MinimalWork(number_of_qubits)
+unitary = MinimalWorkProtocol(number_of_qubits)
 #The True as the second argument is to show the barriers in the QuantumCircuit
 circuit = DynamicCooling(unitary,True)
 
@@ -95,10 +95,10 @@ Semi-Open Dynamic Cooling is implemented using the class `SemiOpenCooling`, the 
 Example:
 ```python
 from qubitcooling import HeatBathCooling
-from qubitcooling import MinimalWork
+from qubitcooling import MinimalWorkProtocol
 
 number_of_qubits = 5
-unitary = MinimalWork(number_of_qubits)
+unitary = MinimalWorkProtocol(number_of_qubits)
 rounds = 3
 circuit = HeatBathCooling(unitary,rounds,False)
 ```
@@ -110,10 +110,10 @@ After generating a quantum circuit with the method `calculateFinalTemperature()`
 Example:
 ```python
 from qubitcooling import DynamicCooling
-from qubitcooling import MinimalWork
+from qubitcooling import MinimalWorkProtocol
 
 number_of_qubits = 5
-unitary = MinimalWork(number_of_qubits)
+unitary = MinimalWorkProtocol(number_of_qubits)
 dynamic = DynamicCooling(unitary)
 
 #Probability of target qubit to be in the state |1⟩
