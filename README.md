@@ -126,6 +126,7 @@ dynamic.calculateWorkCost(probabilityExcitedState)
 temperature = 3.4763
 #Resonant frequency of qubit (GHz)
 w = 1
+
 dynamic.calculateFinalTemperature(temperature,w)
 ```
 
