@@ -23,10 +23,10 @@ class DynamicCooling():
     _coolingUnitary = None
     _barriers = False
     _circuit = None
+    _generatedCircuit = False
     def __init__(self,coolingUnitary=_coolingUnitary,barriers=_barriers):
         self._numQubits,self._coolingUnitary = checkInputMatrix(coolingUnitary)
         self._barriers = barriers
-        self._circuit = CoolingCircuit(self._numQubits,coolingUnitary=self._coolingUnitary,barriers=self._barriers)
 
     def getCircuit(self):
         """
@@ -34,6 +34,9 @@ class DynamicCooling():
         Return:
             Cooling Circuit (QuantumCircuit)
         """
+        if(self._generatedCircuit == False):
+            self._circuit = CoolingCircuit(self._numQubits,coolingUnitary=self._coolingUnitary,barriers=self._barriers)
+            self._generatedCircuit = True
         return self._circuit
     
     def calculateFinalProbability(self,excitedStateProbability):

@@ -29,6 +29,7 @@ class HeatBathCooling():
     _barriers = False
     _rounds = 1
     _circuit = None
+    _generatedCircuit = False
     def __init__(self,coolingUnitary=_coolingUnitary,rounds = _rounds,barriers=_barriers):
         self._numQubits,self._coolingUnitary = checkInputMatrix(coolingUnitary)
         self._rounds = rounds
@@ -43,6 +44,9 @@ class HeatBathCooling():
         Return:
             Cooling Circuit (QuantumCircuit)
         """
+        if(self._generatedCircuit == False):
+            self._circuit = self._buildCircuit(CoolingCircuit(self._numQubits,coolingUnitary=self._coolingUnitary,barriers=self._barriers),self._rounds)
+            self._generatedCircuit = True
         return self._circuit
     
     def calculateFinalProbability(self,excitedStateProbability):
