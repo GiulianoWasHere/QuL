@@ -122,7 +122,7 @@ probabilityExcitedState = 0.1
 dynamic.calculateFinalProbability(probabilityExcitedState)
 dynamic.calculateWorkCost(probabilityExcitedState)
 
-#Temperature in milliKelvin mK
+#Temperature in milliKelvin (mK)
 temperature = 3.4763
 #Resonant frequency of qubit (GHz)
 w = 1
