@@ -90,37 +90,6 @@ class HeatBathCooling():
         prob = temperatureToProbability(temperature,w)
         return probabilityToTemperature(self.calculateFinalProbability(prob),w)
     
-    def calculateWorkCost(self,excitedStateProbability,w=1):
-        """
-        ## calculateWorkCost(excitedStateProbability,w)
-            Calculate the work cost of the Unitary.
-
-        Parameters:
-            excitedStateProbability (float): Probability of the excited state for all qubits.
-            OR
-            excitedStateProbability (list): Probability of the excited state for each qubit.
-            (Optional) w (float): Resonant frequency of qubit (GHz)
-        Return:
-            Work Cost (float)
-        """      
-        workcost = 0
-        numberOfStates = 2 ** self._numQubits
-        if(not(isinstance(excitedStateProbability, list))):
-            excitedStateProbability = self._numQubits * [excitedStateProbability]
-        for j in range(self._rounds):
-            #for each round calcolate the work cost
-            workcost += workCost(self._coolingUnitary,excitedStateProbability,w) 
-            initialVector = generateInitialVector(self._numQubits,excitedStateProbability)
-            finalVector = initialVector.dot(self._coolingUnitary)
-            finalprob = 1
-            l = finalVector.tocoo().col
-            for i in range(len(l)):
-                if(l[i] < int(numberOfStates/2)):
-                    finalprob -= finalVector[:, [l[i]]].data[0]
-            #change the probability of the target qubit
-            excitedStateProbability[0] = finalprob
-        return workcost   
-    
     def _buildCircuit(self,circuit,times):
         """
         Private: Build the circuit.
