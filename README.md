@@ -125,9 +125,9 @@ dynamic.calculateWorkCost(probabilityExcitedState)
 #Temperature in milliKelvin (mK)
 temperature = 3.4763
 #Resonant frequency of qubit (GHz)
-w = 1
+f = 1
 
-dynamic.calculateFinalTemperature(temperature,w)
+dynamic.calculateFinalTemperature(temperature,f)
 ```
 
 
