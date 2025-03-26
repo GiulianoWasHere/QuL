@@ -45,20 +45,20 @@ class CoolingUnitary:
         """
         return self.coolingUnitary
     
-    def calculateWorkCost(self,excitedStateProbability,w=1):
+    def calculateWorkCost(self,excitedStateProbability,f=1):
         """
-        ## calculateWorkCost(excitedStateProbability,w)
+        ## calculateWorkCost(excitedStateProbability,f)
             Calculate the work cost of the Unitary.
 
         Parameters:
             excitedStateProbability (float): Probability of the excited state for all qubits.
             OR
             excitedStateProbability (list): Probability of the excited state for each qubit.
-            (Optional) w (float): Resonant frequency of qubit (GHz)
+            (Optional) f (float): Standard resonant frequency of qubit (GHz)
         Return:
-            Work Cost (float)
+            Work Cost in micro-electronVolts(float)
         """      
-        return workCost(self.coolingUnitary,excitedStateProbability,w)
+        return workCost(self.coolingUnitary,excitedStateProbability,f)
     
     def getPermutations(self):
         """
@@ -238,16 +238,16 @@ class CoolingUnitary:
         
         self.coolingUnitary = csr_array((data, (row, col)), shape=(numOfStates, numOfStates))
 
-def workCost(m,excitedStateProbability,w):
+def workCost(m,excitedStateProbability,f):
     """
-    ## workCost(excitedStateProbability,w)
+    ## workCost(excitedStateProbability,f)
         Calculate the work cost of the Unitary.
 
     Parameters:
         excitedStateProbability (float): Probability of the excited state for all qubits.
         OR
         excitedStateProbability (list): Probability of the excited state for each qubit.
-        (Optional) w (float): Resonant frequency of qubit
+        (Optional) f (float): Standard Resonant frequency of qubit (GHz)
     Return:
         Work Cost (float)
     """
@@ -288,8 +288,9 @@ def workCost(m,excitedStateProbability,w):
             else:
                 stateInProb = (excitedStateProbability ** (numQubits - countZeros(stateIn))) * ((1 - excitedStateProbability)** countZeros(stateIn))
                 stateOutProb = (excitedStateProbability ** (numQubits - countZeros(stateOut))) * ((1 - excitedStateProbability)** countZeros(stateOut))
-            
-            eigenvalue = (Planck/(2*np.pi))*(w/2)*(10**9) * (numQubits - countZeros(stateIn)) - (countZeros(stateIn))
+                
+            h_ueV_GHz = Planck*6.241506363094e+24*10**9
+            eigenvalue = h_ueV_GHz*(f/2) * (numQubits - countZeros(stateIn)) - (countZeros(stateIn))
             workcost += eigenvalue * (stateOutProb - stateInProb)
     return workcost
 

@@ -69,30 +69,30 @@ class SubOptimalCooling:
         else:
             return 0
     
-    def calculateFinalTemperature(self,temperature,w):
+    def calculateFinalTemperature(self,temperature,f):
         """
         ## calculateFinalProbability(excitedState)
             Calculate the final temperature after the application of the circuit.
 
         Parameters:
             temperature (float): temperature of the target qubit in milliKelvin (mK)
-            w (float): Resonant frequency of qubit (GHz)
+            f (float): Standard resonant frequency of qubit (GHz)
         Return:
             Final Temperature (float) : final temperature in milliKelvin (mK)
         """  
-        prob = temperatureToProbability(temperature,w)
-        return probabilityToTemperature(self.calculateFinalProbability(prob),w)
+        prob = temperatureToProbability(temperature,f)
+        return probabilityToTemperature(self.calculateFinalProbability(prob),f)
     
-    def calculateWorkCost(self,excitedStateProbability,w=1):
+    def calculateWorkCost(self,excitedStateProbability,f=1):
         """
-        ## calculateWorkCost(excitedStateProbability,w)
+        ## calculateWorkCost(excitedStateProbability,f)
             Calculate the work cost of the Unitary.
 
         Parameters:
             excitedStateProbability (float): Probability of the excited state for all qubits.
             OR
             excitedStateProbability (list): Probability of the excited state for each qubit.
-            (Optional) w (float): Resonant frequency of qubit (GHz)
+            (Optional) f (float): Standard resonant frequency of qubit (GHz)
         Return:
             Work Cost (float)
         """      
@@ -103,7 +103,7 @@ class SubOptimalCooling:
         for j in range(self._rounds):
             #for each round calcolate the work cost
             #We multiply the cost of the unitary for each round
-            workcost += workCost(self._coolingUnitary,excitedStateProbability,w) * self._numQubits ** (self._rounds - j -1)
+            workcost += workCost(self._coolingUnitary,excitedStateProbability,f) * self._numQubits ** (self._rounds - j -1)
             initialVector = generateInitialVector(self._numQubits,excitedStateProbability)
             finalVector = initialVector.dot(self._coolingUnitary)
             finalprob = 1

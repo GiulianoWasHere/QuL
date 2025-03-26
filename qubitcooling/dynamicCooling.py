@@ -59,34 +59,34 @@ class DynamicCooling():
                 finalprob -= finalVector[:, [l[i]]].data[0]
         return finalprob
     
-    def calculateFinalTemperature(self,temperature,w):
+    def calculateFinalTemperature(self,temperature,f):
         """
         ## calculateFinalProbability(excitedState)
             Calculate the final temperature after the application of the circuit.
 
         Parameters:
             temperature (float): temperature of the target qubit in milliKelvin (mK)
-            w (float): Resonant frequency of qubit (GHz)
+            f (float): Standard resonant frequency of qubit (GHz)
         Return:
             Final Temperature (float) : final temperature in milliKelvin (mK)
         """  
-        prob = temperatureToProbability(temperature,w)
-        return probabilityToTemperature(self.calculateFinalProbability(prob),w)
+        prob = temperatureToProbability(temperature,f)
+        return probabilityToTemperature(self.calculateFinalProbability(prob),f)
     
-    def calculateWorkCost(self,excitedStateProbability,w=1):
+    def calculateWorkCost(self,excitedStateProbability,f=1):
         """
-        ## calculateWorkCost(excitedStateProbability,w)
+        ## calculateWorkCost(excitedStateProbability,f)
             Calculate the work cost of the Unitary.
 
         Parameters:
             excitedStateProbability (float): Probability of the excited state for all qubits.
             OR
             excitedStateProbability (list): Probability of the excited state for each qubit.
-            (Optional) w (float): Resonant frequency of qubit (GHz)
+            (Optional) f (float): Standard resonant frequency of qubit (GHz)
         Return:
-            Work Cost (float)
+            Work Cost in micro-electonVolts(float)
         """      
-        return workCost(self._coolingUnitary,excitedStateProbability,w)
+        return workCost(self._coolingUnitary,excitedStateProbability,f)
 
     
     
