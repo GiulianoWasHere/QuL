@@ -133,15 +133,17 @@ def generateInitialVector(numQubits, excitedStateProbability):
         
     return csr_array((data, (col, row)), shape=(1, numStates))
 
-def temperatureToProbability(temperature,w):
-    hw = Planck*w*(10**9)/(2*np.pi)
-    kb = Boltzmann/1000
-    return 1/(np.exp(hw/(kb*temperature))+ 1)
+def temperatureToProbability(temperature,f):
+    h_ueV_GHz = Planck*6.241506363094e+24*10**9
+    hf = h_ueV_GHz*f
+    kb = Boltzmann*6.241506363094e+24/1000
+    return 1/(np.exp(hf/(kb*temperature))+ 1)
 
-def probabilityToTemperature(probability,w):
-    hw = Planck*w*(10**9)/(2*np.pi)
-    kb = Boltzmann/1000
-    return hw/(kb*np.log(1/probability -1))
+def probabilityToTemperature(probability,f):
+    h_ueV_GHz = Planck*6.241506363094e+24*10**9
+    hf = h_ueV_GHz*f
+    kb = Boltzmann*6.241506363094e+24/1000
+    return hf/(kb*np.log(1/probability -1))
 
 def probabilityFromList(numQubits,numberInBinary,excitedStateProbability):
     probability = 1
